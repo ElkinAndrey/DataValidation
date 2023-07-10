@@ -5,7 +5,7 @@ namespace DataValidationAPI.Persistence.Abstractions
     /// <summary>
     /// Интерфейс универсального репозитория
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TEntity">Сущность репозитория</typeparam>
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         /// <summary>
