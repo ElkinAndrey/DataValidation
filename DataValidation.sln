@@ -3,9 +3,54 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataValidationAPI", "DataValidationAPI", "{ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationAPI.Presentation", "DataValidationAPI\DataValidationAPI.Presentation\DataValidationAPI.Presentation.csproj", "{CB918836-27DB-4214-9CFF-321BAADD37E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationAPI.Domain", "DataValidationAPI\DataValidationAPI.Domain\DataValidationAPI.Domain.csproj", "{A4C6D447-B13E-433F-9E99-9D0348149ECE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationAPI.Persistence", "DataValidationAPI\DataValidationAPI.Persistence\DataValidationAPI.Persistence.csproj", "{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationAPI.Service", "DataValidationAPI\DataValidationAPI.Service\DataValidationAPI.Service.csproj", "{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationAPI.Infrastructure", "DataValidationAPI\DataValidationAPI.Infrastructure\DataValidationAPI.Infrastructure.csproj", "{4FDCB20D-2E63-460B-A1D5-4CF546E14533}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CB918836-27DB-4214-9CFF-321BAADD37E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB918836-27DB-4214-9CFF-321BAADD37E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB918836-27DB-4214-9CFF-321BAADD37E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB918836-27DB-4214-9CFF-321BAADD37E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C6D447-B13E-433F-9E99-9D0348149ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C6D447-B13E-433F-9E99-9D0348149ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C6D447-B13E-433F-9E99-9D0348149ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C6D447-B13E-433F-9E99-9D0348149ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FDCB20D-2E63-460B-A1D5-4CF546E14533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FDCB20D-2E63-460B-A1D5-4CF546E14533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FDCB20D-2E63-460B-A1D5-4CF546E14533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FDCB20D-2E63-460B-A1D5-4CF546E14533}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB918836-27DB-4214-9CFF-321BAADD37E7} = {ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}
+		{A4C6D447-B13E-433F-9E99-9D0348149ECE} = {ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}
+		{5D379BB3-CB4D-4F7D-BF70-3B5F29227E70} = {ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}
+		{B95ED0A4-DB45-4970-AC3F-5EDFCC94281D} = {ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}
+		{4FDCB20D-2E63-460B-A1D5-4CF546E14533} = {ED0F935A-D5BB-4B8F-80ED-FD08092E2B36}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43EA6989-12EE-4796-9883-8A329A6ADA4C}

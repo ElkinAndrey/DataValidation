@@ -3,8 +3,18 @@
     /// <summary>
     /// Проверка данных
     /// </summary>
-    public class DataCheck : BaseEntity
+    public class DataCheck
     {
+        /// <summary>
+        /// Id пользователя
+        /// </summary>
+        public Guid UserId { get; set; }
+
+        /// <summary>
+        /// Id данных
+        /// </summary>
+        public Guid DataId { get; set; }
+        
         /// <summary>
         /// Данные
         /// </summary>

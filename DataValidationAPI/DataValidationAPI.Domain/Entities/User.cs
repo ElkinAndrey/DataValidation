@@ -13,7 +13,7 @@
         /// <summary>
         /// Роль
         /// </summary>
-        public Role Role { get; set; }
+        public required Role Role { get; set; }
 
         /// <summary>
         /// Хэш пароля
@@ -34,5 +34,10 @@
         /// Дата окончания работы токена обновления
         /// </summary>
         public DateTime TokenExpirationDate {  get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Проверки данных
+        /// </summary>
+        public List<DataCheck> DataChecks { get; set; } = new List<DataCheck>();
     }
 }
