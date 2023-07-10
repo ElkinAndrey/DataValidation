@@ -44,5 +44,10 @@ namespace DataValidationAPI.Persistence.Abstractions
         /// </summary>
         /// <param name="entity">Изменяемая сущность</param>
         public Task Update(TEntity entity);
+
+        /// <summary>
+        /// Сохранение изменений
+        /// </summary>
+        public Task Save();
     }
 }
