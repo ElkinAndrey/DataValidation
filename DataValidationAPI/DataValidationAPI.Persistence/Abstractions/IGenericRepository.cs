@@ -34,12 +34,6 @@ namespace DataValidationAPI.Persistence.Abstractions
         public Task Delete(Guid id);
 
         /// <summary>
-        /// Удалить сущность
-        /// </summary>
-        /// <param name="entity">Удаляемая сущность</param>
-        public Task Delete(TEntity entity);
-
-        /// <summary>
         /// Изменить
         /// </summary>
         /// <param name="entity">Изменяемая сущность</param>

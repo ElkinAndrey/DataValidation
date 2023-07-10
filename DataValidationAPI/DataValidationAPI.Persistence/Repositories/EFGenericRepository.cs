@@ -1,5 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
+using DataValidationAPI.Persistence.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataValidationAPI.Persistence.Repositories
@@ -12,42 +13,46 @@ namespace DataValidationAPI.Persistence.Repositories
     {
 
         private ApplicationDbContext _context;
-        private DbSet<TEntity> _dbSet;
+        private DbSet<TEntity> _set;
 
         public EFGenericRepository(ApplicationDbContext context)
         {
             _context = context;
-            _dbSet = context.Set<TEntity>();
+            _set = context.Set<TEntity>();
         }
 
         public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task Delete(TEntity entity)
-        {
-            throw new NotImplementedException();
+            var entity = await GetById(id);
+            _set.Remove(entity);
         }
 
         public async Task<IQueryable<TEntity>> Get()
         {
-            throw new NotImplementedException();
+            var urls = await _set.ToListAsync();
+            return urls.AsQueryable();
         }
 
         public async Task<TEntity> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _set.FirstOrDefaultAsync(e => e.Id == id);
+
+            if (entity is null)
+                throw new EntityNotFoundException(id);
+
+            return entity;
+
         }
 
         public async Task Insert(TEntity entity)
         {
-            throw new NotImplementedException();
+            _set.Add(entity);
         }
 
         public async Task Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            _set.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
         public async Task Save()
