@@ -14,5 +14,10 @@
         /// Токен обновления
         /// </summary>
         public required string RefreshToken { get; set; }
+
+        /// <summary>
+        /// Дата генерации токенов
+        /// </summary>
+        public DateTime GenerationDate { get; set; } = DateTime.Now;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing;
 
 namespace DataValidationAPI.Persistence
 {
@@ -45,6 +44,11 @@ namespace DataValidationAPI.Persistence
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Role>()
+                .HasAlternateKey(r => r.Name);
+
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(u => u.Email);
 
             modelBuilder.Entity<DataCheck>()
                 .HasKey(p => new { p.UserId, p.DataId });

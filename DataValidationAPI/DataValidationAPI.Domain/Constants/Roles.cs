@@ -6,6 +6,11 @@
     public class Roles
     {
         /// <summary>
+        /// Обычный пользователь
+        /// </summary>
+        public static readonly string User = "User";
+
+        /// <summary>
         /// Роль менеджера
         /// </summary>
         public static readonly string Manager = "Manager";

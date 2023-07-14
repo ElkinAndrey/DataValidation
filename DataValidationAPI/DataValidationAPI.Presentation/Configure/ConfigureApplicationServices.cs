@@ -118,8 +118,11 @@ namespace DataValidationAPI.Persistence.Configure
 
             _builder.Services.AddTransient<IDataRepository, EFDataRepository>();
             _builder.Services.AddTransient<IDataCheckRepository, EFDataCheckRepository>();
+            _builder.Services.AddTransient<IUserRepository, EFUserRepository>();
+            _builder.Services.AddTransient<IRoleRepository, EFRoleRepository>();
 
             _builder.Services.AddTransient<IDataService, DataService>();
+            _builder.Services.AddTransient<IAuthService, AuthService>();
         }
 
         /// <summary>

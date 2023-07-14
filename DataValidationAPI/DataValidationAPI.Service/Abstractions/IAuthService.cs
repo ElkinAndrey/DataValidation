@@ -10,7 +10,10 @@ namespace DataValidationAPI.Service.Abstractions
         /// <param name="email">Электронная почта</param>
         /// <param name="password">Пароль</param>
         /// <returns></returns>
-        public Task RegisterAsync(string email, string password);
+        public Task<PairOfTokens> RegisterAsync(
+            string email,
+            string password,
+            string secretKey);
 
         /// <summary>
         /// Войти в аккаунт

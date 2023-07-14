@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using DataValidationAPI.Domain.Constants;
+using DataValidationAPI.Infrastructure.Dto.Auth;
+using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -7,19 +13,34 @@ namespace DataValidationAPI.Presentation.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IAuthService authService)
         {
             _configuration = configuration;
+            _authService = authService;
         }
 
         /// <summary>
         /// Зарегистироваться
         /// </summary>
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync()
+        public async Task<IActionResult> RegisterAsync(RegisterDto request)
         {
-            return Ok();
+            var tokens = await _authService.RegisterAsync(
+                email: request.Email,
+                password: request.Password,
+                secretKey: _configuration.GetSection("AppSettings:Token").Value!);
+
+            // Токен обновления записывается в куки
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
+                Expires = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
+            };
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
 
         /// <summary>
