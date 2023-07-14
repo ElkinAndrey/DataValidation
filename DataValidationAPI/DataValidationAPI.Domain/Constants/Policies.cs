@@ -8,11 +8,11 @@
         /// <summary>
         /// Политика для менеджера и администратора
         /// </summary>
-        public static readonly string Manager = "Manager";
+        public const string Manager = "Manager";
 
         /// <summary>
         /// Политика только для администратора
         /// </summary>
-        public static readonly string Admin = "Admin";
+        public const string Admin = "Admin";
     }
 }

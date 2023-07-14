@@ -1,10 +1,16 @@
-﻿using DataValidationAPI.Domain.Entities;
+﻿using DataValidationAPI.Domain.Constants;
+using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
 using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using System.Security.Claims;
+using System.Text;
 
 namespace DataValidationAPI.Persistence.Configure
 {
@@ -25,6 +31,70 @@ namespace DataValidationAPI.Persistence.Configure
             _builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_builder.Configuration.GetConnectionString("DefaultConnection"))
             );
+        }
+
+        /// <summary>
+        /// Настройки Swagger
+        /// </summary>
+        public void SwaggerSettings()
+        {
+            // Для авторизации
+            _builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "Стандартный заголовок авторизации с использованием схемы Bearer (\"bearer {токен}\")",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+        }
+
+        /// <summary>
+        /// Настройки аутентификации
+        /// </summary>
+        public void AuthenticationSettings()
+        {
+            _builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(_builder.Configuration.GetSection("AppSettings:Token").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero, // Для нормальной работы времени в токене
+                    };
+                });
+        }
+
+        /// <summary>
+        /// Политики для авторизации
+        /// </summary>
+        public void Policy()
+        {
+            _builder.Services.AddAuthorization(options =>
+            {
+                // Менеджер
+                options.AddPolicy(Policies.Manager, builder =>
+                {
+                    builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Manager)
+                                               || x.User.HasClaim(ClaimTypes.Role, Roles.Admin));
+                });
+
+                // Администратор
+                options.AddPolicy(Policies.Admin, builder =>
+                {
+                    builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Admin));
+                });
+            });
         }
 
         /// <summary>
@@ -58,6 +128,9 @@ namespace DataValidationAPI.Persistence.Configure
         public void Start()
         {
             DataBase();
+            SwaggerSettings();
+            AuthenticationSettings();
+            Policy();
             JsonSerializableSettings();
             DependencyInjection();
         }
