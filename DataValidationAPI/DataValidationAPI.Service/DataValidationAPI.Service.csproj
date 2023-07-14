@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataValidationAPI.Domain\DataValidationAPI.Domain.csproj" />
+    <ProjectReference Include="..\DataValidationAPI.Persistence\DataValidationAPI.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

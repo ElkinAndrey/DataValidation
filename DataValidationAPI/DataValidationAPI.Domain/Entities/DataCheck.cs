@@ -14,16 +14,16 @@
         /// Id данных
         /// </summary>
         public Guid DataId { get; set; }
-        
+
         /// <summary>
         /// Данные
         /// </summary>
-        public required Data Data { get; set; }
+        public Data Data { get; set; }
 
         /// <summary>
         /// Проверяющий
         /// </summary>
-        public required User User { get; set; }
+        public User User { get; set; }
 
         /// <summary>
         /// Прошло проверку или нет

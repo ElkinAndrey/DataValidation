@@ -12,19 +12,6 @@ namespace DataValidationAPI.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Data",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Information = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Data", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -60,6 +47,26 @@ namespace DataValidationAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Data",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Information = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonProvidedId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Data", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Data_User_PersonProvidedId",
+                        column: x => x.PersonProvidedId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DataCheck",
                 columns: table => new
                 {
@@ -74,8 +81,7 @@ namespace DataValidationAPI.Persistence.Migrations
                         name: "FK_DataCheck_Data_DataId",
                         column: x => x.DataId,
                         principalTable: "Data",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DataCheck_User_UserId",
                         column: x => x.UserId,
@@ -83,6 +89,11 @@ namespace DataValidationAPI.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Data_PersonProvidedId",
+                table: "Data",
+                column: "PersonProvidedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DataCheck_DataId",

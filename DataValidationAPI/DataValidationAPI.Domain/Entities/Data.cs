@@ -19,5 +19,10 @@
         /// Проверка данных
         /// </summary>
         public DataCheck? DataCheck { get; set; } = null;
+
+        /// <summary>
+        /// Человек предоставивший данные
+        /// </summary>
+        public required User PersonProvided { get; set; }
     }
 }

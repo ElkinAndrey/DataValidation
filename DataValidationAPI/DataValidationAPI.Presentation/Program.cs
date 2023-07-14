@@ -8,7 +8,6 @@ builder.Services.AddSwaggerGen();
 
 var configureApplicationServices = new ConfigureApplicationServices(builder);
 configureApplicationServices.Start();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

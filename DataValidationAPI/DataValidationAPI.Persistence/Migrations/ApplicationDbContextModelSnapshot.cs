@@ -17,7 +17,7 @@ namespace DataValidationAPI.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -35,7 +35,12 @@ namespace DataValidationAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("PersonProvidedId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonProvidedId");
 
                     b.ToTable("Data");
                 });
@@ -109,12 +114,22 @@ namespace DataValidationAPI.Persistence.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("DataValidationAPI.Domain.Entities.Data", b =>
+                {
+                    b.HasOne("DataValidationAPI.Domain.Entities.User", "PersonProvided")
+                        .WithMany()
+                        .HasForeignKey("PersonProvidedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PersonProvided");
+                });
+
             modelBuilder.Entity("DataValidationAPI.Domain.Entities.DataCheck", b =>
                 {
                     b.HasOne("DataValidationAPI.Domain.Entities.Data", "Data")
                         .WithOne("DataCheck")
                         .HasForeignKey("DataValidationAPI.Domain.Entities.DataCheck", "DataId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataValidationAPI.Domain.Entities.User", "User")

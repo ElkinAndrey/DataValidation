@@ -46,7 +46,7 @@ namespace DataValidationAPI.Persistence.Repositories
 
         public async Task Insert(TEntity entity)
         {
-            _set.Add(entity);
+            await _set.AddAsync(entity);
         }
 
         public async Task Update(TEntity entity)

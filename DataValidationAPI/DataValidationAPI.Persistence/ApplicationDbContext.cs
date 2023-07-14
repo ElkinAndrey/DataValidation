@@ -1,5 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace DataValidationAPI.Persistence
 {
@@ -47,6 +48,11 @@ namespace DataValidationAPI.Persistence
 
             modelBuilder.Entity<DataCheck>()
                 .HasKey(p => new { p.UserId, p.DataId });
+
+            modelBuilder.Entity<DataCheck>()
+                .HasOne(p => p.Data)
+                .WithOne(t => t.DataCheck)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

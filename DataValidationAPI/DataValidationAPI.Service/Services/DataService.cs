@@ -1,6 +1,9 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
+using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
+using Microsoft.VisualBasic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataValidationAPI.Service.Services
 {
@@ -12,7 +15,12 @@ namespace DataValidationAPI.Service.Services
         /// <summary>
         /// Репозиторий с данными
         /// </summary>
-        private IGenericRepository<Data> _dataRepository;
+        private IDataRepository _dataRepository;
+
+        /// <summary>
+        /// Репозиторий проверки данных
+        /// </summary>
+        private IDataCheckRepository _dataCheckRepository;
 
         /// <summary>
         /// Репозиторий с пользователями
@@ -25,45 +33,78 @@ namespace DataValidationAPI.Service.Services
         /// <param name="dataRepository">Репозиторий с данными</param>
         /// <param name="userRepository">Репозиторий с пользователями</param>
         public DataService(
-            IGenericRepository<Data> dataRepository,
+            IDataRepository dataRepository,
+            IDataCheckRepository dataCheckRepository,
             IGenericRepository<User> userRepository)
         {
             _dataRepository = dataRepository;
+            _dataCheckRepository = dataCheckRepository;
             _userRepository = userRepository;
         }
 
-        public Task AddNoValidDatesAsync(
-            Guid personId,
-            string information)
+        public async Task AddNoValidDatesAsync(
+            Guid userId,
+            string information,
+            Guid? dataId = null)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetById(userId);
+
+            var data = new Data
+            {
+                Id = dataId is null ? Guid.NewGuid() : (Guid)dataId,
+                Date = DateTime.Now,
+                Information = information,
+                PersonProvided = user,
+            };
+
+            await _dataRepository.Insert(data);
+            await _dataRepository.Save();
         }
 
-        public Task<IEnumerable<Data>> GetDatasAsync(
+        public async Task<IEnumerable<Data>> GetDatasAsync(
             int start = 0,
             int length = int.MaxValue,
+            bool onlyValid = false,
             string? email = null,
             DateTime? dateStart = null,
             DateTime? dateEnd = null)
         {
-            throw new NotImplementedException();
+            var data = await _dataRepository.Get(
+                start,
+                length,
+                onlyValid,
+                email,
+                dateStart,
+                dateEnd);
+
+            return data;
         }
 
-        public Task<IEnumerable<Data>> GetValidDatasAsync(
-            int start,
-            int length,
-            int email,
-            DateTime dateStart,
-            DateTime dateEnd)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RateDataAsync(
+        public async Task RateDataAsync(
             Guid dataId,
+            Guid userId,
             bool? valid = null)
         {
-            throw new NotImplementedException();
+            var dataCheck = await _dataCheckRepository.GetById(dataId);
+            var user = await _userRepository.GetById(userId);
+
+            if (dataCheck is null)
+            {
+                var data = await _dataRepository.GetById(dataId);
+                await _dataCheckRepository.Insert(new DataCheck()
+                {
+                    Data = data,
+                    User = user,
+                    Valid = valid
+                });
+                await _dataCheckRepository.Save();
+                return;
+            }
+
+            dataCheck.Valid = valid;
+            dataCheck.User = user;
+            await _dataCheckRepository.Update(dataCheck);
+            await _dataCheckRepository.Save();
         }
     }
 }
