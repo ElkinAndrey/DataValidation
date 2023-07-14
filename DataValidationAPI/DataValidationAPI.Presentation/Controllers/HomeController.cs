@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    [Route("api/home")]
     [ApiController]
-    [Route("home")]
     public class HomeController : ControllerBase
     {
         private IDataService _service;
