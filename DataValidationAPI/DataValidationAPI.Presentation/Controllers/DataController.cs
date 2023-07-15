@@ -107,7 +107,7 @@ namespace DataValidationAPI.Presentation.Controllers
 
         [HttpGet]
         [Route("{dataId}")]
-        [Authorize(Policy = Policies.Manager)]
+        [Authorize]
         public async Task<IActionResult> GetDataByIdAsync(Guid dataId)
         {
             return Ok();
