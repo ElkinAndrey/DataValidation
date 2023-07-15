@@ -72,9 +72,11 @@ namespace DataValidationAPI.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
 
                     b.ToTable("Role");
                 });
@@ -87,7 +89,7 @@ namespace DataValidationAPI.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -98,16 +100,17 @@ namespace DataValidationAPI.Persistence.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("TokenExpirationDate")
+                    b.Property<DateTime?>("TokenExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Email");
 
                     b.HasIndex("RoleId");
 

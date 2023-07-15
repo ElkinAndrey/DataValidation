@@ -13,5 +13,12 @@ namespace DataValidationAPI.Persistence.Abstractions
         /// <param name="email">Электронная почта</param>
         /// <returns>Пользователь (null если не найден)</returns>
         public Task<User?> GetByEmail(string email);
+
+        /// <summary>
+        /// Получить пользователя по токену обновления
+        /// </summary>
+        /// <param name="token">Токен обновления</param>
+        /// <returns>Пользователь</returns>
+        public Task<User?> GetByToken(string token);
     }
 }

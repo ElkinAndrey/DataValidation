@@ -40,7 +40,16 @@ namespace DataValidationAPI.Service.Services
 
         public async Task DeleteTokenAsync(string token)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByToken(token);
+
+            if (user is null)
+                return;
+
+            user.RefreshToken = null;
+            user.TokenExpirationDate = null;
+
+            await _userRepository.Update(user);
+            await _userRepository.Save();
         }
 
         public async Task<PairOfTokens> LoginAsync(string email, string password, string secretKey)

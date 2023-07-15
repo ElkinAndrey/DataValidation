@@ -1,11 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataValidationAPI.Persistence.Repositories
 {
@@ -26,26 +21,17 @@ namespace DataValidationAPI.Persistence.Repositories
             var user = await _set
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == email);
+
             return user;
         }
-    }
 
-    public class EFRoleRepository : EFGenericRepository<Role>, IRoleRepository
-    {
-        private ApplicationDbContext _context;
-        private DbSet<Role> _set;
-
-        public EFRoleRepository(ApplicationDbContext context)
-            : base(context)
+        public async Task<User?> GetByToken(string token)
         {
-            _context = context;
-            _set = context.Set<Role>();
-        }
+            var user = await _set
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.RefreshToken == token);
 
-        public async Task<Role?> GetByName(string name)
-        {
-            var role = await _set.FirstOrDefaultAsync(u => u.Name == name);
-            return role;
+            return user;
         }
     }
 }

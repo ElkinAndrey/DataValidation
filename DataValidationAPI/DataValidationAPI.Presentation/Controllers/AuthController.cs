@@ -70,7 +70,18 @@ namespace DataValidationAPI.Presentation.Controllers
         /// </summary>
         [HttpGet("logout")]
         public async Task<IActionResult> LogoutAsync()
-        {
+        {            
+            // Проверить, есть ли токен в куки
+            string? refreshToken = Request.Cookies["refreshToken"]; // Токен обновления
+            if (refreshToken is null)
+                return Ok();
+
+            // Удалить токен обновления из куков
+            Response.Cookies.Delete("refreshToken");
+
+            // Удалить токен из базы дынных
+            await _authService.DeleteTokenAsync(refreshToken);
+
             return Ok();
         }
 

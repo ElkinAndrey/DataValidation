@@ -28,12 +28,12 @@
         /// <summary>
         /// Токен обновления
         /// </summary>
-        public string RefreshToken { get; set; } = string.Empty;
+        public string? RefreshToken { get; set; } = null;
 
         /// <summary>
         /// Дата окончания работы токена обновления
         /// </summary>
-        public DateTime TokenExpirationDate {  get; set; } = DateTime.Now;
+        public DateTime? TokenExpirationDate {  get; set; } = null;
 
         /// <summary>
         /// Проверки данных
