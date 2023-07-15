@@ -20,6 +20,7 @@ namespace DataValidationAPI.Persistence.Repositories
             int start = 0,
             int length = int.MaxValue,
             bool onlyValid = false,
+            Guid? userId = null,
             string? email = null,
             DateTime? dateStart = null,
             DateTime? dateEnd = null)
@@ -28,9 +29,13 @@ namespace DataValidationAPI.Persistence.Repositories
             var data = _set
                 .Include(d => d.DataCheck)
                     .ThenInclude(d => d.User)
+                        .ThenInclude(d => d.Role)
                 .Include(d => d.PersonProvided)
+                    .ThenInclude(d => d.Role)
                 .Where(d =>
-                    !onlyValid || d.DataCheck != null)
+                    !onlyValid 
+                    || (d.DataCheck != null && d.DataCheck.Valid == true)
+                    || (userId != null && d.DataCheck!.UserId == userId))
                 .Where(d =>
                     email == null || email == ""
                     ? true

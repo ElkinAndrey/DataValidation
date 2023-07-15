@@ -65,6 +65,7 @@ namespace DataValidationAPI.Service.Services
             int start = 0,
             int length = int.MaxValue,
             bool onlyValid = false,
+            Guid? userId = null,
             string? email = null,
             DateTime? dateStart = null,
             DateTime? dateEnd = null)
@@ -73,6 +74,7 @@ namespace DataValidationAPI.Service.Services
                 start,
                 length,
                 onlyValid,
+                userId,
                 email,
                 dateStart,
                 dateEnd);

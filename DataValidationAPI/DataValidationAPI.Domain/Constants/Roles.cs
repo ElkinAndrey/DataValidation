@@ -8,16 +8,16 @@
         /// <summary>
         /// Обычный пользователь
         /// </summary>
-        public static readonly string User = "User";
+        public const string User = "User";
 
         /// <summary>
         /// Роль менеджера
         /// </summary>
-        public static readonly string Manager = "Manager";
+        public const string Manager = "Manager";
 
         /// <summary>
         /// Роль администратора
         /// </summary>
-        public static readonly string Admin = "Admin";
+        public const string Admin = "Admin";
     }
 }

@@ -1,13 +1,15 @@
 using DataValidationAPI.Persistence.Configure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 var configureApplicationServices = new ConfigureApplicationServices(builder);
 configureApplicationServices.Start();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -17,6 +19,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

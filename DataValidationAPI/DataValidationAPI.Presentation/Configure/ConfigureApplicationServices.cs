@@ -5,6 +5,7 @@ using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
