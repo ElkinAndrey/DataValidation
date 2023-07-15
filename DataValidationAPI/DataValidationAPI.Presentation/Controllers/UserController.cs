@@ -1,9 +1,7 @@
 ﻿using DataValidationAPI.Domain.Constants;
-using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace DataValidationAPI.Presentation.Controllers
 {

@@ -1,4 +1,4 @@
-﻿using DataValidationAPI.Infrastructure.Dto.UserData;
+﻿using DataValidationAPI.Infrastructure.Dto.ProfileData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +6,7 @@ namespace DataValidationAPI.Presentation.Controllers
 {
     [Route("api/profile/data")]
     [ApiController]
-    public class UserDataController : ControllerBase
+    public class ProfileDataController : ControllerBase
     {
         [HttpPost]
         [Route("")]

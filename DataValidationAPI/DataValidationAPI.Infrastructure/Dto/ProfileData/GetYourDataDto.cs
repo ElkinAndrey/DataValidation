@@ -1,4 +1,4 @@
-﻿namespace DataValidationAPI.Infrastructure.Dto.UserData
+﻿namespace DataValidationAPI.Infrastructure.Dto.ProfileData
 {
     /// <summary>
     /// Данные для получения своих данных
