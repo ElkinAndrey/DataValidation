@@ -35,7 +35,7 @@ namespace DataValidationAPI.Persistence.Repositories
                 .Where(d =>
                     !onlyValid 
                     || (d.DataCheck != null && d.DataCheck.Valid == true)
-                    || (userId != null && d.DataCheck!.UserId == userId))
+                    || (d.PersonProvided.Id == userId))
                 .Where(d =>
                     email == null || email == ""
                     ? true
@@ -48,7 +48,7 @@ namespace DataValidationAPI.Persistence.Repositories
                     dateEnd == null
                     ? true
                     : d.Date <= dateEnd)
-                .OrderBy(d => d.Date)
+                .OrderByDescending(d => d.Date)
                 .Skip(start)
                 .Take(length);
 

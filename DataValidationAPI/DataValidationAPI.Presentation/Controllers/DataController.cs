@@ -2,6 +2,7 @@ using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.Data;
 using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Features;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace DataValidationAPI.Persistence
 {
@@ -57,6 +58,19 @@ namespace DataValidationAPI.Persistence
                 .HasOne(p => p.Data)
                 .WithOne(t => t.DataCheck)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            // Добавление ролей в базу данных
+            modelBuilder.Entity<Role>().HasData(DataForDB.Roles);
+
+            // Инициализация данных по умолчанию
+            CreateData(modelBuilder);
+        }
+
+        private void CreateData(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().HasData(DataForDB.Users);
+            modelBuilder.Entity<Data>().HasData(DataForDB.Datas);
+            modelBuilder.Entity<DataCheck>().HasData(DataForDB.DataChecks);
         }
     }
 }

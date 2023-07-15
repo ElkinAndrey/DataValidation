@@ -21,8 +21,13 @@
         public DataCheck? DataCheck { get; set; } = null;
 
         /// <summary>
-        /// Человек предоставивший данные
+        /// Id человека, предоставившего данные
         /// </summary>
-        public required User PersonProvided { get; set; }
+        public Guid PersonProvidedId { get; set; }
+
+        /// <summary>
+        /// Человек, предоставивший данные
+        /// </summary>
+        public User PersonProvided { get; set; }
     }
 }

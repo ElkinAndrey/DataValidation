@@ -11,9 +11,14 @@
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
+        /// Id роли
+        /// </summary>
+        public Guid RoleId { get; set; }
+
+        /// <summary>
         /// Роль
         /// </summary>
-        public required Role Role { get; set; }
+        public Role Role { get; set; }
 
         /// <summary>
         /// Хэш пароля
