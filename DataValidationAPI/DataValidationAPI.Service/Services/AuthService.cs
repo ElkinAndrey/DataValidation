@@ -78,7 +78,31 @@ namespace DataValidationAPI.Service.Services
 
         public async Task<PairOfTokens> RefreshTokenAsync(string token, string secretKey)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByToken(token);
+
+            if (user is null)
+                throw new UserNotFoundException();
+
+            if (DateTime.Now > user.TokenExpirationDate)
+            {
+                user.RefreshToken = null;
+                user.TokenExpirationDate = null;
+
+                await _userRepository.Update(user);
+                await _userRepository.Save();
+
+                throw new TokenNotValidException();
+            }
+
+            var tokens = await GenerateTokens(user, secretKey);
+
+            user.RefreshToken = tokens.RefreshToken;
+            user.TokenExpirationDate = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan;
+
+            await _userRepository.Update(user);
+            await _userRepository.Save();
+
+            return tokens;
         }
 
         public async Task<PairOfTokens> RegisterAsync(

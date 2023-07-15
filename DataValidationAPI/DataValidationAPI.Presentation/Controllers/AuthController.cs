@@ -1,10 +1,8 @@
-﻿using Azure.Core;
-using DataValidationAPI.Domain.Constants;
+﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Infrastructure.Dto.Auth;
+using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Service.Abstractions;
-using DataValidationAPI.Service.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -90,8 +88,27 @@ namespace DataValidationAPI.Presentation.Controllers
         /// </summary>
         [HttpGet("refresh")]
         public async Task<IActionResult> RefreshAsync()
-        {
-            return Ok();
+        {            
+            // Достать токен обновления из куки
+            string? refreshToken = Request.Cookies["refreshToken"];
+
+            // Если токена нет, то выдать ошибку
+            if (string.IsNullOrEmpty(refreshToken))
+                throw new RefreshTokenNotInCookieException();
+
+            var tokens = await _authService.RefreshTokenAsync(
+                token: refreshToken!,
+                secretKey: _configuration.GetSection("AppSettings:Token").Value!);
+
+            // Токен обновления записывается в куки
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
+                Expires = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
+            };
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
     }
 }
