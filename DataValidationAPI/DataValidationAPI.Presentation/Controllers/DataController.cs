@@ -2,13 +2,14 @@ using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.Data;
 using DataValidationAPI.Service.Abstractions;
-using DataValidationAPI.Service.Features;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -74,7 +75,7 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPost]
-        [Route("valid")]
+        [Route("only-valid")]
         [AllowAnonymous]
         public async Task<IActionResult> GetOnlyValidDatasAsync(GetDatasDto record)
         {
@@ -99,9 +100,32 @@ namespace DataValidationAPI.Presentation.Controllers
 
             await _service.RateDataAsync(
                 dataId: dataId,
-                userId: user.Id,
-                valid: record.Valid);
+            userId: user.Id,
+            valid: record.Valid);
+            return Ok();
+        }
 
+        [HttpGet]
+        [Route("{dataId}")]
+        [Authorize(Policy = Policies.Manager)]
+        public async Task<IActionResult> GetDataByIdAsync(Guid dataId)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{dataId}/change")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> ChangeDataAsync(Guid dataId, ChangeDataDto record)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("{dataId}/delete")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> DeleteDataAsync(Guid dataId)
+        {
             return Ok();
         }
 
