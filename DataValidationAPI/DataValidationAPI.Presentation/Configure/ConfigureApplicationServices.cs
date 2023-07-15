@@ -5,11 +5,13 @@ using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
@@ -39,17 +41,35 @@ namespace DataValidationAPI.Persistence.Configure
         /// </summary>
         public void SwaggerSettings()
         {
-            // Для авторизации
-            _builder.Services.AddSwaggerGen(options =>
+            _builder.Services.AddSwaggerGen(c =>
             {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Стандартный заголовок авторизации с использованием схемы Bearer (\"bearer {токен}\")",
-                    In = ParameterLocation.Header,
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
                 });
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
+                
+                // Нужно для того, чтобы Swagger всегда прокидывал JWT токен в Header
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
             });
         }
 

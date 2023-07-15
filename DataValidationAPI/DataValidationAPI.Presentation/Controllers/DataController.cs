@@ -5,11 +5,8 @@ using DataValidationAPI.Service.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -40,7 +37,7 @@ namespace DataValidationAPI.Presentation.Controllers
 
         [HttpPost]
         [Route("")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDatasAsync(GetDatasDto record)
         {
             var user = await GetPersonByToken();
@@ -48,8 +45,12 @@ namespace DataValidationAPI.Presentation.Controllers
             var onlyValid = true;
             var userId = (Guid?)null;
 
-            switch (user.Role.Name)
+            switch (user?.Role?.Name!)
             {
+                default:
+                    onlyValid = true;
+                    userId = null;
+                    break;
                 case Roles.User:
                     userId = user.Id;
                     onlyValid = true;
@@ -57,8 +58,7 @@ namespace DataValidationAPI.Presentation.Controllers
                 case Roles.Manager:
                 case Roles.Admin:
                     onlyValid = false;
-                    break;
-                default:
+                    userId = null;
                     break;
             }
 
@@ -71,38 +71,28 @@ namespace DataValidationAPI.Presentation.Controllers
                 dateStart: record.DateStart,
                 dateEnd: record.DateEnd);
 
-            return DatasInCorrectFormat(datas);
-        }
-
-        [HttpPost]
-        [Route("only-valid")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetOnlyValidDatasAsync(GetDatasDto record)
-        {
-            var datas = await _service.GetDatasAsync(
-                start: record.Start ?? 0,
-                length: record.Length ?? int.MaxValue,
-                onlyValid: true,
-                userId: null,
-                email: record.Email,
-                dateStart: record.DateStart,
-                dateEnd: record.DateEnd);
-
-            return DatasInCorrectFormat(datas);
-        }
-
-        [HttpPut]
-        [Route("{dataId}/set-valid")]
-        [Authorize(Policy = Policies.Manager)]
-        public async Task<IActionResult> RateDataAsync(Guid dataId, RateDataDto record)
-        {
-            var user = await GetPersonByToken();
-
-            await _service.RateDataAsync(
-                dataId: dataId,
-            userId: user.Id,
-            valid: record.Valid);
-            return Ok();
+            return Ok(datas.Select(d => new
+            {
+                d.Id,
+                d.Date,
+                d.Information,
+                PersonProvided = new
+                {
+                    d.PersonProvided.Id,
+                    d.PersonProvided.Email,
+                    role = d.PersonProvided.Role.Name
+                },
+                DataChecks = d.DataCheck is null ? null : new
+                {
+                    PersonChecking = new
+                    {
+                        d.DataCheck.User.Id,
+                        d.DataCheck.User.Email,
+                        role = d.DataCheck.User.Role.Name
+                    },
+                    d.DataCheck.Valid,
+                }
+            }));
         }
 
         [HttpGet]
@@ -135,9 +125,11 @@ namespace DataValidationAPI.Presentation.Controllers
         /// Получить пользователя из токена
         /// </summary>
         /// <returns>Пользователь</returns>
-        private async Task<User> GetPersonByToken()
+        private async Task<User?> GetPersonByToken()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken is null)
+                return null;
             var handler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = handler.ReadJwtToken(accessToken);
             var user = GetPersonByClaim(jwtSecurityToken.Claims);
@@ -162,36 +154,6 @@ namespace DataValidationAPI.Presentation.Controllers
                     user.Role.Name = claim.Value;
             }
             return user;
-        }
-
-        /// <summary>
-        /// Преобразовать данные в нужный формат
-        /// </summary>
-        /// <param name="datas">Список с данными</param>
-        private IActionResult DatasInCorrectFormat(IEnumerable<Data> datas)
-        {
-            return Ok(datas.Select(d => new
-            {
-                d.Id,
-                d.Date,
-                d.Information,
-                PersonProvided = new
-                {
-                    d.PersonProvided.Id,
-                    d.PersonProvided.Email,
-                    role = d.PersonProvided.Role.Name
-                },
-                DataChecks = d.DataCheck is null ? null : new
-                {
-                    PersonChecking = new
-                    {
-                        d.DataCheck.User.Id,
-                        d.DataCheck.User.Email,
-                        role = d.DataCheck.User.Role.Name
-                    },
-                    d.DataCheck.Valid,
-                }
-            }));
         }
 
         #endregion

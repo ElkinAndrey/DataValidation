@@ -1,7 +1,14 @@
-﻿using DataValidationAPI.Domain.Constants;
+﻿using Azure.Core;
+using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Infrastructure.Dto.User;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -11,16 +18,8 @@ namespace DataValidationAPI.Presentation.Controllers
     {
         [HttpPost]
         [Route("{userId}/data")]
-        [Authorize]
-        public async Task<IActionResult> GetDataByUserIdAsync(Guid userId, GetDataByUserIdDto record)
-        {
-            return Ok();
-        }
-
-        [HttpPost]
-        [Route("{userId}/data/only-valid")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetOnlyValidDataByUserIdAsync(Guid userId, GetDataByUserIdDto record)
+        public async Task<IActionResult> GetDataByUserIdAsync(Guid userId, GetDataByUserIdDto record)
         {
             return Ok();
         }
