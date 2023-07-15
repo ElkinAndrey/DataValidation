@@ -23,7 +23,9 @@ namespace DataValidationAPI.Persistence.Repositories
 
         public async Task<User?> GetByEmail(string email)
         {
-            var user = await _set.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _set
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Email == email);
             return user;
         }
     }

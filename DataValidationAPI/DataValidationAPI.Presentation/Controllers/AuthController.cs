@@ -47,9 +47,22 @@ namespace DataValidationAPI.Presentation.Controllers
         /// Войти
         /// </summary>
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync()
+        public async Task<IActionResult> LoginAsync(LoginDto request)
         {
-            return Ok();
+            var tokens = await _authService.LoginAsync(
+                email: request.Email,
+                password: request.Password,
+                secretKey: _configuration.GetSection("AppSettings:Token").Value!);
+
+            // Токен обновления записывается в куки
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
+                Expires = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
+            };
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
 
         /// <summary>

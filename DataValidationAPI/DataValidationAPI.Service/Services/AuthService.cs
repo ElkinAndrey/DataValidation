@@ -45,7 +45,26 @@ namespace DataValidationAPI.Service.Services
 
         public async Task<PairOfTokens> LoginAsync(string email, string password, string secretKey)
         {
-            throw new NotImplementedException();
+            // Пользователь ищется в базе данных
+            var user = await _userRepository.GetByEmail(email);
+
+            // Если пользователь с таким Email не найден
+            if (user is null)
+                throw new EmailNotFoundException(email);
+
+            // Проверяется, правильно ли введен пароль
+            if (!PasswordHash.Verify(password, user?.PasswordHash!, user?.PasswordSalt!))
+                throw new WrongPasswordException();
+
+            var tokens = await GenerateTokens(user!, secretKey);
+
+            user!.RefreshToken = tokens.RefreshToken;
+            user!.TokenExpirationDate = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan;
+
+            await _userRepository.Update(user);
+            await _userRepository.Save();
+
+            return tokens;
         }
 
         public async Task<PairOfTokens> RefreshTokenAsync(string token, string secretKey)
