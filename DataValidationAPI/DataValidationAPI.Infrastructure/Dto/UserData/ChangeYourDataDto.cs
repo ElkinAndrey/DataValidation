@@ -1,4 +1,4 @@
-﻿namespace DataValidationAPI.Infrastructure.Dto.Data
+﻿namespace DataValidationAPI.Infrastructure.Dto.UserData
 {
     /// <summary>
     /// Изменение данных

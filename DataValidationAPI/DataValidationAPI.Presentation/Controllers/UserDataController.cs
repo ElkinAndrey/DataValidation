@@ -1,4 +1,4 @@
-﻿using DataValidationAPI.Infrastructure.Dto.Data;
+﻿using DataValidationAPI.Infrastructure.Dto.UserData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
