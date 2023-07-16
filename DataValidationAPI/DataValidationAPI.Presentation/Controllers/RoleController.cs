@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DataValidationAPI.Persistence.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
@@ -7,14 +8,25 @@ namespace DataValidationAPI.Presentation.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
-        public RoleController() { }
+        private IRoleRepository _repository;
+
+        public RoleController(IRoleRepository repository)
+        {
+            _repository = repository;
+        }
 
         [HttpGet]
         [Route("")]
         [AllowAnonymous]
         public async Task<IActionResult> GetRolesAsync()
         {
-            return Ok();
+            var roles = await _repository.Get();
+
+            return Ok(roles.Select(r => new
+            {
+                r.Id,
+                r.Name,
+            }));
         }
 
         [HttpGet]
@@ -22,7 +34,13 @@ namespace DataValidationAPI.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetRoleByIdAsync(Guid roleId)
         {
-            return Ok();
+            var role = await _repository.GetById(roleId);
+
+            return Ok(new
+            {
+                role.Id,
+                role.Name,
+            });
         }
     }
 }
