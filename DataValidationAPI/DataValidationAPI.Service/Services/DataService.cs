@@ -1,11 +1,10 @@
 ﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
-using DataValidationAPI.Persistence.Repositories;
+using DataValidationAPI.Persistence.Dto;
 using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Dto;
 using DataValidationAPI.Service.Exceptions;
-using Microsoft.VisualBasic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataValidationAPI.Service.Services
 {
@@ -63,9 +62,17 @@ namespace DataValidationAPI.Service.Services
             await _dataRepository.Save();
         }
 
-        public async Task ChangeDataAsync(Guid id, string? information = null, Guid? personProvidedId = null)
+        public async Task ChangeDataAsync(
+            Guid id,
+            string? information = null,
+            Guid? personProvidedId = null,
+            Guid? userId = null)
         {
             var data = await _dataRepository.GetById(id);
+
+            if (userId is not null && data.PersonProvidedId != userId)
+                throw new NoPermissionToAccessDataException();
+
             if (information is not null)
                 data.Information = information;
             if (personProvidedId is not null)
@@ -77,9 +84,16 @@ namespace DataValidationAPI.Service.Services
             await _dataRepository.Save();
         }
 
-        public async Task DeleteDataAsync(Guid id)
+        public async Task DeleteDataAsync(Guid dataId, Guid? userId = null)
         {
-            await _dataRepository.Delete(id);
+            if (userId is not null)
+            {
+                var data = await _dataRepository.GetById(dataId);
+                if (data.PersonProvidedId != userId)
+                    throw new NoPermissionToAccessDataException();
+            }
+
+            await _dataRepository.Delete(dataId);
             await _dataRepository.Save();
         }
 
@@ -106,42 +120,59 @@ namespace DataValidationAPI.Service.Services
             throw new NoPermissionToAccessDataException();
         }
 
-        public async Task<IEnumerable<Data>> GetDatasAsync(
-            int start = 0,
-            int length = int.MaxValue,
-            User? user = null,
-            string? email = null,
-            DateTime? dateStart = null,
-            DateTime? dateEnd = null)
+        public async Task<IEnumerable<Data>> GetDatasAsync(GetDataParams param)
         {
-            var onlyValid = true;
-            var userId = (Guid?)null;
-
-            switch (user?.Role?.Name!)
+            var repParam = new GetDataFromRepositoryParams()
             {
-                default:
-                    onlyValid = true;
-                    userId = null;
-                    break;
-                case Roles.User:
-                    userId = user.Id;
-                    onlyValid = true;
-                    break;
-                case Roles.Manager:
-                case Roles.Admin:
-                    onlyValid = false;
-                    userId = null;
-                    break;
+                Start = param.Start,
+                Length = param.Length,
+                Email = param.Email,
+                DateStart = param.DateStart,
+                DateEnd = param.DateEnd,
+                IsUnverifiedData = false,
+                IsValidatedData = param.IsValidatedData,
+                IsNoValidatedData = false,
+                IsCheckData = false,
+                UserParam = null,
+            };
+
+            if (param.UserParam?.RoleRecipientData is not null)
+            {
+                repParam.UserParam = new UserParamForRepository
+                {
+                    UserId = param.UserParam.UserId,
+                    TakeOnlyThisUser = param.UserParam.TakeOnlyThisUser,
+                    IsUnverifiedData = param.IsUnverifiedData,
+                    IsValidatedData = param.IsValidatedData,
+                    IsNoValidatedData = param.IsNoValidatedData,
+                    IsCheckData = param.IsCheckData,
+                };
+
+                switch (param.UserParam.RoleRecipientData)
+                {
+                    default:
+                        if (param.UserParam.RecipientDataId != param.UserParam.UserId)
+                            repParam.UserParam = new UserParamForRepository
+                            {
+                                UserId = param.UserParam.UserId,
+                                TakeOnlyThisUser = param.UserParam.TakeOnlyThisUser,
+                                IsUnverifiedData = false,
+                                IsValidatedData = param.IsValidatedData,
+                                IsNoValidatedData = false,
+                                IsCheckData = false,
+                            };
+                        break;
+                    case Roles.Manager:
+                    case Roles.Admin:
+                        repParam.IsUnverifiedData = param.IsUnverifiedData;
+                        repParam.IsValidatedData = param.IsValidatedData;
+                        repParam.IsNoValidatedData = param.IsNoValidatedData;
+                        repParam.IsCheckData = param.IsCheckData;
+                        break;
+                }
             }
 
-            var data = await _dataRepository.Get(
-                start,
-                length,
-                onlyValid,
-                userId,
-                email,
-                dateStart,
-                dateEnd);
+            var data = await _dataRepository.Get(repParam);
 
             return data;
         }

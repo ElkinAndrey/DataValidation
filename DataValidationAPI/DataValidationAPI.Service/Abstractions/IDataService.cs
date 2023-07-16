@@ -1,4 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
+using DataValidationAPI.Persistence.Dto;
+using DataValidationAPI.Service.Dto;
 
 namespace DataValidationAPI.Service.Abstractions
 {
@@ -8,22 +10,11 @@ namespace DataValidationAPI.Service.Abstractions
     public interface IDataService
     {
         /// <summary>
-        /// Получить срез всех данных
+        /// Получить данные
         /// </summary>
-        /// <param name="start">Начало отчета</param>
-        /// <param name="length">Длина среза</param>
-        /// <param name="user">Человек, у которого можно получить не проверенные данные</param>
-        /// <param name="email">Часть электронной почты</param>
-        /// <param name="dateStart">Начало отчета даты</param>
-        /// <param name="dateEnd">Конец отчета даты</param>
-        /// <returns>Список со всеми данными</returns>
-        public Task<IEnumerable<Data>> GetDatasAsync(
-            int start = 0,
-            int length = int.MaxValue,
-            User? user = null,
-            string? email = null,
-            DateTime? dateStart = null,
-            DateTime? dateEnd = null);
+        /// <param name="param">Параметры для получения данных</param>
+        /// <returns>Список данных</returns>
+        public Task<IEnumerable<Data>> GetDatasAsync(GetDataParams param);
 
         /// <summary>
         /// Добавить не проверенные данные
@@ -57,18 +48,29 @@ namespace DataValidationAPI.Service.Abstractions
         /// <summary>
         /// Удалить данные по Id
         /// </summary>
-        /// <param name="id">Id данных</param>
-        public Task DeleteDataAsync(Guid id);
+        /// <remarks>
+        /// Если указан id пользователя, то данные удаляться только в том случае, если id совпадает с id пользователя, 
+        /// добавившего данные
+        /// </remarks>
+        /// <param name="dataId">Id данных</param>
+        /// <param name="userId">Id пользователя</param>
+        public Task DeleteDataAsync(Guid dataId, Guid? userId = null);
 
         /// <summary>
         /// Изменить данные
         /// </summary>
+        /// <remarks>
+        /// Если указан id пользователя, то данные изменяются только в том случае, если id совпадает с id пользователя, 
+        /// добавившего данные
+        /// </remarks>
         /// <param name="id">Id данных</param>
-        /// <param name="Information">Новая информация</param>
-        /// <param name="PersonProvidedId">Новый человек</param>
+        /// <param name="information">Новая информация</param>
+        /// <param name="personProvidedId">Новый человек</param>
+        /// <param name="userId">Id пользователя</param>
         public Task ChangeDataAsync(
             Guid id,
             string? information = null,
-            Guid? personProvidedId = null);
+            Guid? personProvidedId = null,
+            Guid? userId = null);
     }
 }

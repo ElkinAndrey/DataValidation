@@ -1,27 +1,15 @@
 ﻿using DataValidationAPI.Domain.Entities;
+using DataValidationAPI.Persistence.Dto;
 
 namespace DataValidationAPI.Persistence.Abstractions
 {
     public interface IDataRepository : IGenericRepository<Data>
     {
         /// <summary>
-        /// Получить срез списка с данными 
+        /// Получить данные
         /// </summary>
-        /// <param name="start">Начало среза</param>
-        /// <param name="length">Длина среза</param>
-        /// <param name="onlyValid">Нужно ли взять только проверенные данные</param>
-        /// <param name="userId">Id человека, у котороо можно получить не проверенные данные</param>
-        /// <param name="email">Часть электронной почты</param>
-        /// <param name="dateStart">Начало отчета даты</param>
-        /// <param name="dateEnd">Конец отчета даты</param>
-        /// <returns>Список с данными</returns>
-        public Task<IQueryable<Data>> Get(
-            int start = 0,
-            int length = int.MaxValue,
-            bool onlyValid = false,
-            Guid? userId = null,
-            string? email = null,
-            DateTime? dateStart = null,
-            DateTime? dateEnd = null);
+        /// <param name="param">Параметры для получения данных</param>
+        /// <returns>Список данных</returns>
+        public Task<IEnumerable<Data>> Get(GetDataFromRepositoryParams param);
     }
 }

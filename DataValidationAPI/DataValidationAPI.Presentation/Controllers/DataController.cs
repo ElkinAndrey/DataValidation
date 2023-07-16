@@ -1,7 +1,9 @@
 using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.Data;
+using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Dto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +28,7 @@ namespace DataValidationAPI.Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> AddNoValidDatesAsync(AddNoValidDatesDto record)
         {
-            var user = await GetPersonByToken();
+            var user = await Tokens.GetPersonByToken(this);
             await _service.AddNoValidDatesAsync(
                 userId: user.Id,
                 information: record.Information);
@@ -39,15 +41,27 @@ namespace DataValidationAPI.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetDatasAsync(GetDatasDto record)
         {
-            var user = await GetPersonByToken();
+            var user = await Tokens.GetPersonByToken(this);
 
-            var datas = await _service.GetDatasAsync(
-                start: record.Start ?? 0,
-                length: record.Length ?? int.MaxValue,
-                user: user,
-                email: record.Email,
-                dateStart: record.DateStart,
-                dateEnd: record.DateEnd);
+            var datas = await _service.GetDatasAsync(new GetDataParams()
+            {
+                Start = record.Start ?? 0,
+                Length = record.Length ?? int.MaxValue,
+                Email = record.Email,
+                DateStart = record.DateStart,
+                DateEnd = record.DateEnd,
+                IsUnverifiedData = record.IsUnverifiedData ?? true,
+                IsValidatedData = record.IsValidatedData ?? true,
+                IsNoValidatedData = record.IsNoValidatedData ?? true,
+                IsCheckData = record.IsCheckData ?? true,
+                UserParam = user is null ? null : new UserParam()
+                {
+                    UserId = user.Id,
+                    RecipientDataId = user.Id,
+                    RoleRecipientData = user.Role?.Name!,
+                    TakeOnlyThisUser = false,
+                }
+            });
 
             return Ok(datas.Select(d => new
             {
@@ -78,7 +92,7 @@ namespace DataValidationAPI.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetDataByIdAsync(Guid dataId)
         {
-            var user = await GetPersonByToken();
+            var user = await Tokens.GetPersonByToken(this);
             var data = await _service.GetDataByIdAsync(dataId, user);
 
             return Ok(new
@@ -127,44 +141,5 @@ namespace DataValidationAPI.Presentation.Controllers
 
             return Ok();
         }
-
-        #region Вспомогательные функции
-
-        /// <summary>
-        /// Получить пользователя из токена
-        /// </summary>
-        /// <returns>Пользователь</returns>
-        private async Task<User?> GetPersonByToken()
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            if (accessToken is null)
-                return null;
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(accessToken);
-            var user = GetPersonByClaim(jwtSecurityToken.Claims);
-            return user;
-        }
-
-        /// <summary>
-        /// Получить человека из клаймов
-        /// </summary>
-        /// <param name="claims">Клаймы</param>
-        /// <returns>Пользователь</returns>
-        private User GetPersonByClaim(IEnumerable<Claim> claims)
-        {
-            var user = new User() { Role = new Role() };
-            foreach (var claim in claims)
-            {
-                if (claim.Type == ClaimTypes.NameIdentifier)
-                    user.Id = new Guid(claim.Value);
-                else if (claim.Type == ClaimTypes.Email)
-                    user.Email = claim.Value;
-                else if (claim.Type == ClaimTypes.Role)
-                    user.Role.Name = claim.Value;
-            }
-            return user;
-        }
-
-        #endregion
     }
 }

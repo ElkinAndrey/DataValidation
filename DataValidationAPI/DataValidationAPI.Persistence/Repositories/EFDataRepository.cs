@@ -1,7 +1,9 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
+using DataValidationAPI.Persistence.Dto;
 using DataValidationAPI.Persistence.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DataValidationAPI.Persistence.Repositories
 {
@@ -17,41 +19,52 @@ namespace DataValidationAPI.Persistence.Repositories
             _set = context.Set<Data>();
         }
 
-        public async Task<IQueryable<Data>> Get(
-            int start = 0,
-            int length = int.MaxValue,
-            bool onlyValid = false,
-            Guid? userId = null,
-            string? email = null,
-            DateTime? dateStart = null,
-            DateTime? dateEnd = null)
+        public async Task<IEnumerable<Data>> Get(GetDataFromRepositoryParams param)
         {
-
             var data = _set
+                // Подтягивание данных
                 .Include(d => d.DataCheck)
                     .ThenInclude(d => d.User)
                         .ThenInclude(d => d.Role)
                 .Include(d => d.PersonProvided)
                     .ThenInclude(d => d.Role)
+                // Проверка простых данных
                 .Where(d =>
-                    !onlyValid 
-                    || (d.DataCheck != null && d.DataCheck.Valid == true)
-                    || (d.PersonProvided.Id == userId))
-                .Where(d =>
-                    email == null || email == ""
+                    param.Email == null || param.Email == ""
                     ? true
-                    : d.PersonProvided.Email.Contains(email))
+                    : d.PersonProvided!.Email!.Contains(param.Email))
                 .Where(d =>
-                    dateStart == null
+                    param.DateStart == null
                     ? true
-                    : d.Date >= dateStart)
+                    : d.Date >= param.DateStart)
                 .Where(d =>
-                    dateEnd == null
+                    param.DateEnd == null
                     ? true
-                    : d.Date <= dateEnd)
+                    : d.Date <= param.DateEnd)
+                // Проверки на валидности данных
+                .Where(
+                    d => (
+                        param.UserParam != null
+                        && param.UserParam.UserId == d.PersonProvidedId
+                        && (param.UserParam.IsUnverifiedData && d.DataCheck == null
+                            || param.UserParam.IsValidatedData && d.DataCheck != null && d.DataCheck.Valid == true
+                            || param.UserParam.IsNoValidatedData && d.DataCheck != null && d.DataCheck.Valid == false
+                            || param.UserParam.IsCheckData && d.DataCheck != null && d.DataCheck.Valid == null
+                        )
+                    ) || (
+                        (param.UserParam == null || !param.UserParam.TakeOnlyThisUser) 
+                        && (param.IsUnverifiedData && d.DataCheck == null
+                            || param.IsValidatedData && d.DataCheck != null && d.DataCheck.Valid == true
+                            || param.IsNoValidatedData && d.DataCheck != null && d.DataCheck.Valid == false
+                            || param.IsCheckData && d.DataCheck != null && d.DataCheck.Valid == null
+                        )
+                    )
+                )
+                // Выборка нужного
                 .OrderByDescending(d => d.Date)
-                .Skip(start)
-                .Take(length);
+                .Skip(param.Start)
+                .Take(param.Length);
+
 
             return data;
         }
