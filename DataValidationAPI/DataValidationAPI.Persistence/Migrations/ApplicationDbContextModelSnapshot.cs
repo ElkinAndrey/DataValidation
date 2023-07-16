@@ -216,6 +216,9 @@ namespace DataValidationAPI.Persistence.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -235,9 +238,10 @@ namespace DataValidationAPI.Persistence.Migrations
                         {
                             Id = new Guid("35434031-0853-472c-8c87-3b7831e0fd17"),
                             Email = "1",
-                            IsActive = true,
+                            IsActive = false,
                             PasswordHash = "yE3UT3m6W4KlkNLJdTAM4UQYIZuS7QIU/6kWcAjU/mc=",
                             PasswordSalt = new byte[] { 118, 75, 18, 36, 222, 48, 190, 38, 185, 49, 119, 151, 113, 34, 164, 228 },
+                            RegistrationDate = new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("37491307-9159-465b-a902-855c7c315341")
                         },
                         new
@@ -247,6 +251,7 @@ namespace DataValidationAPI.Persistence.Migrations
                             IsActive = true,
                             PasswordHash = "KjK/J9gOLsJ5Qi8MQlpn7+G5YcU1ZnQtuZI1X+TTzy0=",
                             PasswordSalt = new byte[] { 137, 110, 127, 108, 129, 137, 155, 42, 178, 110, 230, 77, 29, 222, 131, 149 },
+                            RegistrationDate = new DateTime(2023, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("37491307-9159-465b-a902-855c7c315341")
                         },
                         new
@@ -256,6 +261,7 @@ namespace DataValidationAPI.Persistence.Migrations
                             IsActive = true,
                             PasswordHash = "mVJOzj048UABroLpqaiOCXC7ov4rY/bHqr8zYznk+2I=",
                             PasswordSalt = new byte[] { 34, 54, 150, 248, 77, 23, 108, 37, 149, 29, 207, 94, 119, 12, 110, 183 },
+                            RegistrationDate = new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("61631b6b-22d3-4a61-83d7-288ed59be881")
                         },
                         new
@@ -265,6 +271,7 @@ namespace DataValidationAPI.Persistence.Migrations
                             IsActive = true,
                             PasswordHash = "Kfqg0txtZSqNkmeQbOosmGadf/IIaB2z3WaeMr3C1o0=",
                             PasswordSalt = new byte[] { 205, 233, 1, 141, 87, 98, 77, 54, 135, 152, 169, 87, 148, 116, 188, 201 },
+                            RegistrationDate = new DateTime(2023, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("61631b6b-22d3-4a61-83d7-288ed59be881")
                         },
                         new
@@ -274,6 +281,7 @@ namespace DataValidationAPI.Persistence.Migrations
                             IsActive = true,
                             PasswordHash = "4PDjB8dRo5n/m9N7vnYR8tM/PdyB0M7wV+dHNRAD3YQ=",
                             PasswordSalt = new byte[] { 51, 48, 107, 15, 165, 157, 219, 223, 108, 49, 81, 49, 152, 219, 5, 159 },
+                            RegistrationDate = new DateTime(2023, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f")
                         },
                         new
@@ -283,6 +291,7 @@ namespace DataValidationAPI.Persistence.Migrations
                             IsActive = true,
                             PasswordHash = "Pmuehs/dEiTauUtjQXqPWSjr4XombKHPuqgZBW1JYhM=",
                             PasswordSalt = new byte[] { 128, 183, 146, 79, 41, 2, 134, 246, 132, 144, 191, 89, 214, 199, 85, 70 },
+                            RegistrationDate = new DateTime(2023, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f")
                         });
                 });

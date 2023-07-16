@@ -144,6 +144,7 @@ namespace DataValidationAPI.Persistence.Configure
 
             _builder.Services.AddTransient<IDataService, DataService>();
             _builder.Services.AddTransient<IAuthService, AuthService>();
+            _builder.Services.AddTransient<IUserService, UserService>();
         }
 
         /// <summary>

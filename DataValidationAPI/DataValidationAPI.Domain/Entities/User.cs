@@ -46,6 +46,11 @@
         public bool IsActive { get; set; } = true;
 
         /// <summary>
+        /// Дата регистрации
+        /// </summary>
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
+
+        /// <summary>
         /// Проверки данных
         /// </summary>
         public List<DataCheck> DataChecks { get; set; } = new List<DataCheck>();

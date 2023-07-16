@@ -36,8 +36,9 @@ namespace DataValidationAPI.Persistence.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TokenExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TokenExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,15 +106,15 @@ namespace DataValidationAPI.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "Email", "IsActive", "PasswordHash", "PasswordSalt", "RefreshToken", "RoleId", "TokenExpirationDate" },
+                columns: new[] { "Id", "Email", "IsActive", "PasswordHash", "PasswordSalt", "RefreshToken", "RegistrationDate", "RoleId", "TokenExpirationDate" },
                 values: new object[,]
                 {
-                    { new Guid("2efa388c-584b-4e8d-9c5d-29fa600cfac9"), "3", true, "mVJOzj048UABroLpqaiOCXC7ov4rY/bHqr8zYznk+2I=", new byte[] { 34, 54, 150, 248, 77, 23, 108, 37, 149, 29, 207, 94, 119, 12, 110, 183 }, null, new Guid("61631b6b-22d3-4a61-83d7-288ed59be881"), null },
-                    { new Guid("35434031-0853-472c-8c87-3b7831e0fd17"), "1", true, "yE3UT3m6W4KlkNLJdTAM4UQYIZuS7QIU/6kWcAjU/mc=", new byte[] { 118, 75, 18, 36, 222, 48, 190, 38, 185, 49, 119, 151, 113, 34, 164, 228 }, null, new Guid("37491307-9159-465b-a902-855c7c315341"), null },
-                    { new Guid("adca4721-3a4c-44ca-80a6-de74abc7450e"), "5", true, "4PDjB8dRo5n/m9N7vnYR8tM/PdyB0M7wV+dHNRAD3YQ=", new byte[] { 51, 48, 107, 15, 165, 157, 219, 223, 108, 49, 81, 49, 152, 219, 5, 159 }, null, new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f"), null },
-                    { new Guid("ead9e0c0-395b-4489-a82b-416562905957"), "4", true, "Kfqg0txtZSqNkmeQbOosmGadf/IIaB2z3WaeMr3C1o0=", new byte[] { 205, 233, 1, 141, 87, 98, 77, 54, 135, 152, 169, 87, 148, 116, 188, 201 }, null, new Guid("61631b6b-22d3-4a61-83d7-288ed59be881"), null },
-                    { new Guid("f5080b8b-9b17-497b-8fe3-9470978b0ab1"), "6", true, "Pmuehs/dEiTauUtjQXqPWSjr4XombKHPuqgZBW1JYhM=", new byte[] { 128, 183, 146, 79, 41, 2, 134, 246, 132, 144, 191, 89, 214, 199, 85, 70 }, null, new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f"), null },
-                    { new Guid("f725550b-b2b0-4509-85bd-556535471756"), "2", true, "KjK/J9gOLsJ5Qi8MQlpn7+G5YcU1ZnQtuZI1X+TTzy0=", new byte[] { 137, 110, 127, 108, 129, 137, 155, 42, 178, 110, 230, 77, 29, 222, 131, 149 }, null, new Guid("37491307-9159-465b-a902-855c7c315341"), null }
+                    { new Guid("2efa388c-584b-4e8d-9c5d-29fa600cfac9"), "3", true, "mVJOzj048UABroLpqaiOCXC7ov4rY/bHqr8zYznk+2I=", new byte[] { 34, 54, 150, 248, 77, 23, 108, 37, 149, 29, 207, 94, 119, 12, 110, 183 }, null, new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("61631b6b-22d3-4a61-83d7-288ed59be881"), null },
+                    { new Guid("35434031-0853-472c-8c87-3b7831e0fd17"), "1", false, "yE3UT3m6W4KlkNLJdTAM4UQYIZuS7QIU/6kWcAjU/mc=", new byte[] { 118, 75, 18, 36, 222, 48, 190, 38, 185, 49, 119, 151, 113, 34, 164, 228 }, null, new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("37491307-9159-465b-a902-855c7c315341"), null },
+                    { new Guid("adca4721-3a4c-44ca-80a6-de74abc7450e"), "5", true, "4PDjB8dRo5n/m9N7vnYR8tM/PdyB0M7wV+dHNRAD3YQ=", new byte[] { 51, 48, 107, 15, 165, 157, 219, 223, 108, 49, 81, 49, 152, 219, 5, 159 }, null, new DateTime(2023, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f"), null },
+                    { new Guid("ead9e0c0-395b-4489-a82b-416562905957"), "4", true, "Kfqg0txtZSqNkmeQbOosmGadf/IIaB2z3WaeMr3C1o0=", new byte[] { 205, 233, 1, 141, 87, 98, 77, 54, 135, 152, 169, 87, 148, 116, 188, 201 }, null, new DateTime(2023, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("61631b6b-22d3-4a61-83d7-288ed59be881"), null },
+                    { new Guid("f5080b8b-9b17-497b-8fe3-9470978b0ab1"), "6", true, "Pmuehs/dEiTauUtjQXqPWSjr4XombKHPuqgZBW1JYhM=", new byte[] { 128, 183, 146, 79, 41, 2, 134, 246, 132, 144, 191, 89, 214, 199, 85, 70 }, null, new DateTime(2023, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7f7d960c-dfc3-4379-b1ec-6112e827862f"), null },
+                    { new Guid("f725550b-b2b0-4509-85bd-556535471756"), "2", true, "KjK/J9gOLsJ5Qi8MQlpn7+G5YcU1ZnQtuZI1X+TTzy0=", new byte[] { 137, 110, 127, 108, 129, 137, 155, 42, 178, 110, 230, 77, 29, 222, 131, 149 }, null, new DateTime(2023, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("37491307-9159-465b-a902-855c7c315341"), null }
                 });
 
             migrationBuilder.InsertData(

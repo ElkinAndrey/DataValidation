@@ -139,6 +139,7 @@ namespace DataValidationAPI.Service.Services
                 PasswordHash = passwordHash, // Хэш пароля
                 PasswordSalt = passwordSalt, // Соль пароля
                 IsActive = true,
+                RegistrationDate = DateTime.Now,
             };
 
             var tokens = await GenerateTokens(user, secretKey);

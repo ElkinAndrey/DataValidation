@@ -1,17 +1,10 @@
-﻿using Azure.Core;
-using DataValidationAPI.Domain.Constants;
+﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Infrastructure.Dto.User;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Dto;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.Security.Claims;
-using System.Text.Json;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
@@ -19,11 +12,13 @@ namespace DataValidationAPI.Presentation.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IDataService _service;
+        private IDataService _dataService;
+        private IUserService _userService;
 
-        public UserController(IDataService service)
+        public UserController(IDataService dataService, IUserService userService)
         {
-            _service = service;
+            _dataService = dataService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -33,7 +28,7 @@ namespace DataValidationAPI.Presentation.Controllers
         {
             var user = await Tokens.GetPersonByToken(this);
 
-            var datas = await _service.GetDatasAsync(new GetDataParams()
+            var datas = await _dataService.GetDatasAsync(new GetDataParams()
             {
                 Start = record.Start ?? 0,
                 Length = record.Length ?? int.MaxValue,
@@ -81,7 +76,22 @@ namespace DataValidationAPI.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetUsersAsync(GetUsersDto record)
         {
-            return Ok();
+            var users = await _userService.GetUsersAsync(
+                start: record.Start ?? 0,
+                length: record.Length ?? int.MaxValue,
+                email: record.Email,
+                roleId: record.RoleId,
+                startRegistrationDate: record.StartRegistrationDate,
+                endRegistrationDate: record.EndRegistrationDate);
+
+            return Ok(users.Select(u => new
+            {
+                u.Id,
+                u.Email,
+                Role = u.Role?.Name!,
+                u.IsActive,
+                u.RegistrationDate,
+            }));
         }
         
         [HttpGet]
