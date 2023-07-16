@@ -61,6 +61,10 @@ namespace DataValidationAPI.Service.Services
             if (user is null)
                 throw new EmailNotFoundException(email);
 
+            // Если аккаунт не активен
+            if (!user.IsActive)
+                throw new AccountNotActiveException();
+
             // Проверяется, правильно ли введен пароль
             if (!PasswordHash.Verify(password, user?.PasswordHash!, user?.PasswordSalt!))
                 throw new WrongPasswordException();
@@ -82,6 +86,10 @@ namespace DataValidationAPI.Service.Services
 
             if (user is null)
                 throw new UserNotFoundException();
+
+            // Если аккаунт не активен
+            if (!user.IsActive)
+                throw new AccountNotActiveException();
 
             if (DateTime.Now > user.TokenExpirationDate)
             {
@@ -130,6 +138,7 @@ namespace DataValidationAPI.Service.Services
                 Role = role,
                 PasswordHash = passwordHash, // Хэш пароля
                 PasswordSalt = passwordSalt, // Соль пароля
+                IsActive = true,
             };
 
             var tokens = await GenerateTokens(user, secretKey);
@@ -150,7 +159,7 @@ namespace DataValidationAPI.Service.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Имя пользователя
                 new Claim(ClaimTypes.Email, user.Email), // Имя пользователя
-                new Claim(ClaimTypes.Role, user.Role.Name) // Роль пользователя
+                new Claim(ClaimTypes.Role, user.Role?.Name!) // Роль пользователя
             };
 
             // Генерируется токен доступа (часто обновляется)

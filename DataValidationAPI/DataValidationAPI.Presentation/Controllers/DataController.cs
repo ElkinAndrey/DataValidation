@@ -54,19 +54,19 @@ namespace DataValidationAPI.Presentation.Controllers
                 d.Id,
                 d.Date,
                 d.Information,
-                PersonProvided = new
+                PersonProvided = d.PersonProvided is null ? null : new
                 {
                     d.PersonProvided.Id,
                     d.PersonProvided.Email,
-                    role = d.PersonProvided.Role.Name
+                    role = d.PersonProvided.Role?.Name!
                 },
                 DataChecks = d.DataCheck is null ? null : new
                 {
-                    PersonChecking = new
+                    PersonChecking = d.DataCheck.User is null ? null : new
                     {
                         d.DataCheck.User.Id,
                         d.DataCheck.User.Email,
-                        role = d.DataCheck.User.Role.Name
+                        role = d.DataCheck.User.Role?.Name!
                     },
                     d.DataCheck.Valid,
                 }
@@ -86,19 +86,19 @@ namespace DataValidationAPI.Presentation.Controllers
                 data.Id,
                 data.Date,
                 data.Information,
-                PersonProvided = new
+                PersonProvided = data.PersonProvided is null ? null : new
                 {
                     data.PersonProvided.Id,
                     data.PersonProvided.Email,
-                    role = data.PersonProvided.Role.Name
+                    role = data.PersonProvided.Role?.Name!
                 },
                 DataChecks = data.DataCheck is null ? null : new
                 {
-                    PersonChecking = new
+                    PersonChecking = data.DataCheck.User is null ? null : new
                     {
                         data.DataCheck.User.Id,
                         data.DataCheck.User.Email,
-                        role = data.DataCheck.User.Role.Name
+                        role = data.DataCheck.User.Role?.Name!
                     },
                     data.DataCheck.Valid,
                 }
