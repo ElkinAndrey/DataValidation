@@ -1,5 +1,6 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
+using DataValidationAPI.Persistence.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataValidationAPI.Persistence.Repositories
@@ -53,6 +54,22 @@ namespace DataValidationAPI.Persistence.Repositories
                 .Take(length);
 
             return data;
+        }
+
+        public override async Task<Data> GetById(Guid id)
+        {
+            var entity = await _set
+                .Include(d => d.DataCheck)
+                    .ThenInclude(d => d.User)
+                        .ThenInclude(d => d.Role)
+                .Include(d => d.PersonProvided)
+                    .ThenInclude(d => d.Role)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (entity is null)
+                throw new EntityNotFoundException(id);
+
+            return entity;
         }
     }
 }

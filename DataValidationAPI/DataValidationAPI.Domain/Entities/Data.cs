@@ -1,4 +1,6 @@
-﻿namespace DataValidationAPI.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DataValidationAPI.Domain.Entities
 {
     /// <summary>
     /// Проверяемые данных
@@ -28,6 +30,6 @@
         /// <summary>
         /// Человек, предоставивший данные
         /// </summary>
-        public User PersonProvided { get; set; }
+        public User? PersonProvided { get; set; }
     }
 }

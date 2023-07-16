@@ -1,7 +1,9 @@
-﻿using DataValidationAPI.Domain.Entities;
+﻿using DataValidationAPI.Domain.Constants;
+using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
 using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Exceptions;
 using Microsoft.VisualBasic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -61,15 +63,77 @@ namespace DataValidationAPI.Service.Services
             await _dataRepository.Save();
         }
 
+        public async Task ChangeDataAsync(Guid id, string? information = null, Guid? personProvidedId = null)
+        {
+            var data = await _dataRepository.GetById(id);
+            if (information is not null)
+                data.Information = information;
+            if (personProvidedId is not null)
+            {
+                var user = await _userRepository.GetById((Guid)personProvidedId);
+                data.PersonProvided = user;
+            }
+            await _dataRepository.Update(data);
+            await _dataRepository.Save();
+        }
+
+        public async Task DeleteDataAsync(Guid id)
+        {
+            await _dataRepository.Delete(id);
+            await _dataRepository.Save();
+        }
+
+        public async Task<Data> GetDataByIdAsync(Guid dataId, User? user)
+        {
+            var data = await _dataRepository.GetById(dataId);
+
+            switch (user?.Role?.Name!)
+            {
+                default:
+                    if (data.DataCheck is not null && data.DataCheck.Valid == true)
+                        return data;
+                    break;
+                case Roles.User:
+                    if (data.PersonProvided.Id == user.Id ||
+                        (data.DataCheck is not null && data.DataCheck.Valid == true))
+                        return data;
+                    break;
+                case Roles.Manager:
+                case Roles.Admin:
+                    return data;
+            }
+
+            throw new NoPermissionToAccessDataException();
+        }
+
         public async Task<IEnumerable<Data>> GetDatasAsync(
             int start = 0,
             int length = int.MaxValue,
-            bool onlyValid = false,
-            Guid? userId = null,
+            User? user = null,
             string? email = null,
             DateTime? dateStart = null,
             DateTime? dateEnd = null)
         {
+            var onlyValid = true;
+            var userId = (Guid?)null;
+
+            switch (user?.Role?.Name!)
+            {
+                default:
+                    onlyValid = true;
+                    userId = null;
+                    break;
+                case Roles.User:
+                    userId = user.Id;
+                    onlyValid = true;
+                    break;
+                case Roles.Manager:
+                case Roles.Admin:
+                    onlyValid = false;
+                    userId = null;
+                    break;
+            }
+
             var data = await _dataRepository.Get(
                 start,
                 length,

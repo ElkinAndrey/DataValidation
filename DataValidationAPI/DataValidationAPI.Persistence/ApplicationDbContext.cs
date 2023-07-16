@@ -45,18 +45,28 @@ namespace DataValidationAPI.Persistence
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Добавление уникальных атрибутов
             modelBuilder.Entity<Role>()
                 .HasAlternateKey(r => r.Name);
-
             modelBuilder.Entity<User>()
                 .HasAlternateKey(u => u.Email);
 
+            // Добавление двух первичных ключей
             modelBuilder.Entity<DataCheck>()
                 .HasKey(p => new { p.UserId, p.DataId });
 
+            // Отключение каскадных удалений
             modelBuilder.Entity<DataCheck>()
-                .HasOne(p => p.Data)
-                .WithOne(t => t.DataCheck)
+                .HasOne(p => p.User)
+                .WithMany(t => t.DataChecks)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<Data>()
+                .HasOne(p => p.PersonProvided)
+                .WithMany(t => t.Datas)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<User>()
+                .HasOne(p => p.Role)
+                .WithMany(t => t.Users)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             // Добавление ролей в базу данных

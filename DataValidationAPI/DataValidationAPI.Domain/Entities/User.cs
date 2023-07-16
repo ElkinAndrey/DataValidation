@@ -18,7 +18,7 @@
         /// <summary>
         /// Роль
         /// </summary>
-        public Role Role { get; set; }
+        public Role? Role { get; set; }
 
         /// <summary>
         /// Хэш пароля
@@ -41,8 +41,18 @@
         public DateTime? TokenExpirationDate {  get; set; } = null;
 
         /// <summary>
+        /// Активен ли аккаунт (можно ли зайти на аккаунт)
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+
+        /// <summary>
         /// Проверки данных
         /// </summary>
         public List<DataCheck> DataChecks { get; set; } = new List<DataCheck>();
+
+        /// <summary>
+        /// Добавленные данные
+        /// </summary>
+        public List<Data> Datas { get; set; } = new List<Data>();
     }
 }

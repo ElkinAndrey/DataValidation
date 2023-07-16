@@ -19,7 +19,6 @@ namespace DataValidationAPI.Presentation.Controllers
         public DataController(IDataService service)
         {
             _service = service;
-
         }
 
         [HttpPost]
@@ -42,31 +41,10 @@ namespace DataValidationAPI.Presentation.Controllers
         {
             var user = await GetPersonByToken();
 
-            var onlyValid = true;
-            var userId = (Guid?)null;
-
-            switch (user?.Role?.Name!)
-            {
-                default:
-                    onlyValid = true;
-                    userId = null;
-                    break;
-                case Roles.User:
-                    userId = user.Id;
-                    onlyValid = true;
-                    break;
-                case Roles.Manager:
-                case Roles.Admin:
-                    onlyValid = false;
-                    userId = null;
-                    break;
-            }
-
             var datas = await _service.GetDatasAsync(
                 start: record.Start ?? 0,
                 length: record.Length ?? int.MaxValue,
-                onlyValid: onlyValid,
-                userId: userId,
+                user: user,
                 email: record.Email,
                 dateStart: record.DateStart,
                 dateEnd: record.DateEnd);
@@ -97,10 +75,34 @@ namespace DataValidationAPI.Presentation.Controllers
 
         [HttpGet]
         [Route("{dataId}")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDataByIdAsync(Guid dataId)
         {
-            return Ok();
+            var user = await GetPersonByToken();
+            var data = await _service.GetDataByIdAsync(dataId, user);
+
+            return Ok(new
+            {
+                data.Id,
+                data.Date,
+                data.Information,
+                PersonProvided = new
+                {
+                    data.PersonProvided.Id,
+                    data.PersonProvided.Email,
+                    role = data.PersonProvided.Role.Name
+                },
+                DataChecks = data.DataCheck is null ? null : new
+                {
+                    PersonChecking = new
+                    {
+                        data.DataCheck.User.Id,
+                        data.DataCheck.User.Email,
+                        role = data.DataCheck.User.Role.Name
+                    },
+                    data.DataCheck.Valid,
+                }
+            });
         }
 
         [HttpPut]
@@ -108,6 +110,11 @@ namespace DataValidationAPI.Presentation.Controllers
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> ChangeDataAsync(Guid dataId, ChangeDataDto record)
         {
+            await _service.ChangeDataAsync(
+                dataId,
+                record.Information,
+                record.PersonProvidedId);
+
             return Ok();
         }
 
@@ -116,6 +123,8 @@ namespace DataValidationAPI.Presentation.Controllers
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> DeleteDataAsync(Guid dataId)
         {
+            await _service.DeleteDataAsync(dataId);
+
             return Ok();
         }
 

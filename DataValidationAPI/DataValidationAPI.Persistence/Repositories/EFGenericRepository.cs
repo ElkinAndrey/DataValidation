@@ -21,19 +21,19 @@ namespace DataValidationAPI.Persistence.Repositories
             _set = context.Set<TEntity>();
         }
 
-        public async Task Delete(Guid id)
+        public virtual async Task Delete(Guid id)
         {
             var entity = await GetById(id);
             _set.Remove(entity);
         }
 
-        public async Task<IQueryable<TEntity>> Get()
+        public virtual async Task<IQueryable<TEntity>> Get()
         {
             var urls = await _set.ToListAsync();
             return urls.AsQueryable();
         }
 
-        public async Task<TEntity> GetById(Guid id)
+        public virtual async Task<TEntity> GetById(Guid id)
         {
             var entity = await _set.FirstOrDefaultAsync(e => e.Id == id);
 
@@ -41,21 +41,20 @@ namespace DataValidationAPI.Persistence.Repositories
                 throw new EntityNotFoundException(id);
 
             return entity;
-
         }
 
-        public async Task Insert(TEntity entity)
+        public virtual async Task Insert(TEntity entity)
         {
             await _set.AddAsync(entity);
         }
 
-        public async Task Update(TEntity entity)
+        public virtual async Task Update(TEntity entity)
         {
             _set.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        public async Task Save()
+        public virtual async Task Save()
         {
             await _context.SaveChangesAsync();
         }

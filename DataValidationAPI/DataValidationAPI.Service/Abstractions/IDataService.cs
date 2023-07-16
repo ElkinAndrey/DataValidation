@@ -12,8 +12,7 @@ namespace DataValidationAPI.Service.Abstractions
         /// </summary>
         /// <param name="start">Начало отчета</param>
         /// <param name="length">Длина среза</param>
-        /// <param name="onlyValid">Нужно ли взять только проверенные данные</param>
-        /// <param name="userId">Id человека, у котороо можно получить не проверенные данные</param>
+        /// <param name="user">Человек, у которого можно получить не проверенные данные</param>
         /// <param name="email">Часть электронной почты</param>
         /// <param name="dateStart">Начало отчета даты</param>
         /// <param name="dateEnd">Конец отчета даты</param>
@@ -21,8 +20,7 @@ namespace DataValidationAPI.Service.Abstractions
         public Task<IEnumerable<Data>> GetDatasAsync(
             int start = 0,
             int length = int.MaxValue,
-            bool onlyValid = false,
-            Guid? userId = null,
+            User? user = null,
             string? email = null,
             DateTime? dateStart = null,
             DateTime? dateEnd = null);
@@ -48,5 +46,29 @@ namespace DataValidationAPI.Service.Abstractions
             Guid dataId,
             Guid userId,
             bool? valid = null);
+
+        /// <summary>
+        /// Получить данные по Id
+        /// </summary>
+        /// <param name="dataId">Id данных</param>
+        /// <param name="user">Пользователь, который вошел в аккаунт</param>
+        public Task<Data> GetDataByIdAsync(Guid dataId, User? user);
+
+        /// <summary>
+        /// Удалить данные по Id
+        /// </summary>
+        /// <param name="id">Id данных</param>
+        public Task DeleteDataAsync(Guid id);
+
+        /// <summary>
+        /// Изменить данные
+        /// </summary>
+        /// <param name="id">Id данных</param>
+        /// <param name="Information">Новая информация</param>
+        /// <param name="PersonProvidedId">Новый человек</param>
+        public Task ChangeDataAsync(
+            Guid id,
+            string? information = null,
+            Guid? personProvidedId = null);
     }
 }

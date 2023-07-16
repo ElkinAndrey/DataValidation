@@ -23,7 +23,7 @@
         /// <summary>
         /// Проверяющий
         /// </summary>
-        public User User { get; set; }
+        public User? User { get; set; }
 
         /// <summary>
         /// Прошло проверку или нет
