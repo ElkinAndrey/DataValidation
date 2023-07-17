@@ -1,7 +1,6 @@
 ﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
-using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Exceptions;
 using DataValidationAPI.Service.Features;
@@ -10,33 +9,37 @@ namespace DataValidationAPI.Service.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _repository;
+        private IUserRepository _userRepository;
+        private IRoleRepository _roleRepository;
 
-        public UserService(IUserRepository repository)
+        public UserService(
+            IUserRepository userRepository,
+            IRoleRepository roleRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         public async Task ChangeBlockUserAsync(Guid userId, bool isActive)
         {
-            var user = await _repository.GetById(userId);
+            var user = await _userRepository.GetById(userId);
 
             if (user is null)
                 throw new UserNotFoundException(userId);
 
             user.IsActive = isActive;
 
-            await _repository.Update(user);
-            await _repository.Save();
+            await _userRepository.Update(user);
+            await _userRepository.Save();
         }
 
         public async Task ChangeEmailAsync(Guid userId, string newEmail)
         {
             // Есть ли такой Email
-            if (await _repository.GetByEmail(newEmail) is not null)
+            if (await _userRepository.GetByEmail(newEmail) is not null)
                 throw new EmailAlreadyExistsException(newEmail);
 
-            var user = await _repository.GetById(userId);
+            var user = await _userRepository.GetById(userId);
 
             if (user is null)
                 throw new UserNotFoundException(userId);
@@ -45,13 +48,36 @@ namespace DataValidationAPI.Service.Services
             user.RefreshToken = null;
             user.TokenExpirationDate = null;
 
-            await _repository.Update(user);
-            await _repository.Save();
+            await _userRepository.Update(user);
+            await _userRepository.Save();
+        }
+
+        public async Task ChangeManagerRoleAsync(Guid userId, bool isManager)
+        {
+            var user = await _userRepository.GetById(userId);
+
+            if (user is null)
+                throw new UserNotFoundException(userId);
+
+            if (user.Role?.Name! == Roles.Admin)
+                throw new InsufficientRightsException();
+
+            Role role;
+            if (isManager)
+                role = await _roleRepository.GetByName(Roles.Manager)
+                    ?? new Role { Id = Guid.NewGuid(), Name = Roles.Manager };
+            else
+                role = await _roleRepository.GetByName(Roles.User)
+                    ?? new Role { Id = Guid.NewGuid(), Name = Roles.User };
+
+            user.Role = role;
+            await _userRepository.Update(user);
+            await _userRepository.Save();
         }
 
         public async Task ChangePasswordAsync(Guid userId, string newPassword)
         {
-            var user = await _repository.GetById(userId);
+            var user = await _userRepository.GetById(userId);
 
             if (user is null)
                 throw new UserNotFoundException(userId);
@@ -67,24 +93,24 @@ namespace DataValidationAPI.Service.Services
             user.RefreshToken = null;
             user.TokenExpirationDate = null;
 
-            await _repository.Update(user);
-            await _repository.Save();
+            await _userRepository.Update(user);
+            await _userRepository.Save();
         }
 
         public async Task DeleteUserAsync(Guid userId)
         {
-            var user = await _repository.GetById(userId);
+            var user = await _userRepository.GetById(userId);
 
             if (user is null)
                 throw new UserNotFoundException(userId);
 
-            await _repository.Delete(user.Id);
-            await _repository.Save();
+            await _userRepository.Delete(user.Id);
+            await _userRepository.Save();
         }
 
         public async Task<User> GetUserByIdAsync(Guid userId)
         {
-            var user = await _repository.GetById(userId);
+            var user = await _userRepository.GetById(userId);
 
             return user;
         }
@@ -97,7 +123,7 @@ namespace DataValidationAPI.Service.Services
             DateTime? startRegistrationDate = null,
             DateTime? endRegistrationDate = null)
         {
-            var users = await _repository.Get(
+            var users = await _userRepository.Get(
                 start: start,
                 length: length,
                 email: email,

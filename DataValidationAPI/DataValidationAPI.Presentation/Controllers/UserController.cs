@@ -123,7 +123,7 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPut]
-        [Route("{userId}/block")]
+        [Route("{userId}/change/block")]
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> BlockUserAsync(Guid userId)
         {
@@ -133,7 +133,7 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPut]
-        [Route("{userId}/unblock")]
+        [Route("{userId}/change/unblock")]
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> UnblockUserAsync(Guid userId)
         {
@@ -143,7 +143,7 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPut]
-        [Route("{userId}/email")]
+        [Route("{userId}/change/email")]
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> ChangeEmailAsync(Guid userId, ChangeEmailDto record)
         {
@@ -156,7 +156,7 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPut]
-        [Route("{userId}/password")]
+        [Route("{userId}/change/password")]
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> ChangePasswordAsync(Guid userId, ChangePasswordDto record)
         {
@@ -164,6 +164,26 @@ namespace DataValidationAPI.Presentation.Controllers
                 throw new NewPasswordNotSpecifiedException();
 
             await _userService.ChangePasswordAsync(userId, record.NewPassword);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{userId}/change/manager/give")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> GiveManagerAsync(Guid userId)
+        {
+            await _userService.ChangeManagerRoleAsync(userId, true);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{userId}/change/manager/take")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> TakeManagerAsync(Guid userId)
+        {
+            await _userService.ChangeManagerRoleAsync(userId, false);
 
             return Ok();
         }

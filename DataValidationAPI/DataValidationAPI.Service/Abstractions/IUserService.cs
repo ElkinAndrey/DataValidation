@@ -58,5 +58,12 @@ namespace DataValidationAPI.Service.Abstractions
         /// <param name="userId">Id пользователя</param>
         /// <param name="newPassword">Новый пароль</param>
         public Task ChangePasswordAsync(Guid userId, string newPassword);
+
+        /// <summary>
+        /// Изменить роль
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        /// <param name="isManager">Сделать ли человека менеджером</param>
+        public Task ChangeManagerRoleAsync(Guid userId, bool isManager);
     }
 }
