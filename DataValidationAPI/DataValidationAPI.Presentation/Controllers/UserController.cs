@@ -99,7 +99,16 @@ namespace DataValidationAPI.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetUserByIdAsync(Guid userId)
         {
-            return Ok();
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            return Ok(new
+            {
+                user.Id,
+                user.Email,
+                Role = user.Role?.Name!,
+                user.IsActive,
+                user.RegistrationDate,
+            });
         }
         
         [HttpPut]

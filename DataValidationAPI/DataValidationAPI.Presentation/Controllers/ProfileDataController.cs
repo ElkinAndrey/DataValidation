@@ -1,4 +1,5 @@
 ﻿using DataValidationAPI.Infrastructure.Dto.ProfileData;
+using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Dto;
@@ -75,7 +76,7 @@ namespace DataValidationAPI.Presentation.Controllers
         {
             var user = await Tokens.GetPersonByToken(this);
             if (user is null)
-                throw new Exception(); // Добавить исключение
+                throw new AccountWasNotLoggedInCorrectlyException();
 
             await _service.DeleteDataAsync(dataId, user.Id);
 
@@ -89,7 +90,7 @@ namespace DataValidationAPI.Presentation.Controllers
         {
             var user = await Tokens.GetPersonByToken(this);
             if (user is null)
-                throw new Exception(); // Добавить исключение
+                throw new AccountWasNotLoggedInCorrectlyException();
 
             await _service.ChangeDataAsync(
                 id: dataId,

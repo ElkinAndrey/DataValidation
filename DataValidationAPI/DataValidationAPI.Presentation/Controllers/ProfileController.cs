@@ -1,5 +1,8 @@
 ﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Infrastructure.Dto.Profile;
+using DataValidationAPI.Presentation.Exceptions;
+using DataValidationAPI.Presentation.Features;
+using DataValidationAPI.Service.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +12,33 @@ namespace DataValidationAPI.Presentation.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
+        private IUserService _userService;
+
+        public ProfileController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpGet]
         [Route("")]
         [Authorize]
         public async Task<IActionResult> GetYourProfileAsync()
         {
-            return Ok();
+            var userFromToken = await Tokens.GetPersonByToken(this);
+
+            if (userFromToken is null)
+                throw new AccountWasNotLoggedInCorrectlyException();
+
+            var user = await _userService.GetUserByIdAsync(userFromToken.Id);
+
+            return Ok(new
+            {
+                user.Id,
+                user.Email,
+                Role = user.Role?.Name!,
+                user.IsActive,
+                user.RegistrationDate,
+            });
         }
 
         [HttpPost]

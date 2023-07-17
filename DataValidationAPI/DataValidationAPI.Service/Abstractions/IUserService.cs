@@ -24,5 +24,12 @@ namespace DataValidationAPI.Service.Abstractions
             Guid? roleId = null,
             DateTime? startRegistrationDate = null,
             DateTime? endRegistrationDate = null);
+
+        /// <summary>
+        /// Получить пользователя по Id
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        /// <returns>Пользователь</returns>
+        public Task<User> GetUserByIdAsync(Guid userId);
     }
 }

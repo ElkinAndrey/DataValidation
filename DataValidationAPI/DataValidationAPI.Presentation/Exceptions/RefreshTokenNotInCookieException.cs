@@ -1,5 +1,8 @@
 ﻿namespace DataValidationAPI.Presentation.Exceptions
 {
+    /// <summary>
+    /// Ошибка, возникающая если токена обновления нет в куки
+    /// </summary>
     public class RefreshTokenNotInCookieException : Exception
     {
         /// <summary>

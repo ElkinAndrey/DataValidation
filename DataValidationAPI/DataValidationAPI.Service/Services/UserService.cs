@@ -13,6 +13,13 @@ namespace DataValidationAPI.Service.Services
             _repository = repository;
         }
 
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            var user = await _repository.GetById(userId);
+
+            return user;
+        }
+
         public async Task<IEnumerable<User>> GetUsersAsync(
             int start = 0,
             int length = int.MaxValue,
