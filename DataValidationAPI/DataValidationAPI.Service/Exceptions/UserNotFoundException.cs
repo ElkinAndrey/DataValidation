@@ -13,5 +13,15 @@
         {
 
         }
+
+        /// <summary>
+        /// Ошибка, возникающая если пользователь не найден
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        public UserNotFoundException(Guid userId) :
+            base($"Пользователь с Id \"{userId}\" не найден")
+        {
+
+        }
     }
 }

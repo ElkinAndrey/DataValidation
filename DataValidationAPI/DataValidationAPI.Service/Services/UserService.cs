@@ -1,6 +1,7 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
 using DataValidationAPI.Service.Abstractions;
+using DataValidationAPI.Service.Exceptions;
 
 namespace DataValidationAPI.Service.Services
 {
@@ -13,12 +14,25 @@ namespace DataValidationAPI.Service.Services
             _repository = repository;
         }
 
+        public async Task ChangeBlockUserAsync(Guid userId, bool isActive)
+        {
+            var user = await _repository.GetById(userId);
+
+            if (user is null)
+                throw new UserNotFoundException(userId);
+
+            user.IsActive = isActive;
+
+            await _repository.Update(user);
+            await _repository.Save();
+        }
+
         public async Task DeleteUserAsync(Guid userId)
         {
             var user = await _repository.GetById(userId);
 
             if (user is null)
-                return;
+                throw new UserNotFoundException(userId);
 
             await _repository.Delete(user.Id);
             await _repository.Save();

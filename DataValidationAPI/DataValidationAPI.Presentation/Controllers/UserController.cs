@@ -120,5 +120,25 @@ namespace DataValidationAPI.Presentation.Controllers
 
             return Ok();
         }
+
+        [HttpPut]
+        [Route("{userId}/block")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> BlockUserAsync(Guid userId)
+        {
+            await _userService.ChangeBlockUserAsync(userId, false);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{userId}/unblock")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> UnblockUserAsync(Guid userId)
+        {
+            await _userService.ChangeBlockUserAsync(userId, true);
+
+            return Ok();
+        }
     }
 }

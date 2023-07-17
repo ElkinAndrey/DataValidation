@@ -37,5 +37,12 @@ namespace DataValidationAPI.Service.Abstractions
         /// </summary>
         /// <param name="userId">Id пользователя</param>
         public Task DeleteUserAsync(Guid userId);
+
+        /// <summary>
+        /// Поменять состояние блокировки пользователя
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        /// <param name="isActive">Новое состояние</param>
+        public Task ChangeBlockUserAsync(Guid userId, bool isActive);
     }
 }

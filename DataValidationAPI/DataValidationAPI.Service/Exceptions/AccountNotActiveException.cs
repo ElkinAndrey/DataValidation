@@ -1,4 +1,6 @@
-﻿namespace DataValidationAPI.Service.Exceptions
+﻿using DataValidationAPI.Domain.Entities;
+
+namespace DataValidationAPI.Service.Exceptions
 {
     /// <summary>
     /// Ошибка, возникающая если аккаунт не активен

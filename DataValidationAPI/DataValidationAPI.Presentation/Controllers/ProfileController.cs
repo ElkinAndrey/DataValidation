@@ -1,6 +1,4 @@
-﻿using DataValidationAPI.Domain.Constants;
-using DataValidationAPI.Infrastructure.Dto.Profile;
-using DataValidationAPI.Presentation.Exceptions;
+﻿using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using Microsoft.AspNetCore.Authorization;
@@ -42,18 +40,17 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         [HttpPost]
-        [Route("change")]
+        [Route("block")]
         [Authorize]
-        public async Task<IActionResult> ChangeYourProfileAsync(ChangeYourProfileDto record)
+        public async Task<IActionResult> BlockYourAccountAsync()
         {
-            return Ok();
-        }
+            var user = await Tokens.GetPersonByToken(this);
 
-        [HttpPost]
-        [Route("delete")]
-        [Authorize]
-        public async Task<IActionResult> DeleteYourAccountAsync()
-        {
+            if (user is null)
+                throw new AccountWasNotLoggedInCorrectlyException();
+
+            await _userService.ChangeBlockUserAsync(user.Id, false);
+
             return Ok();
         }
     }
