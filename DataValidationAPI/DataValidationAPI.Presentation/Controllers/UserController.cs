@@ -111,19 +111,13 @@ namespace DataValidationAPI.Presentation.Controllers
             });
         }
         
-        [HttpPut]
-        [Route("{userId}/change")]
-        [Authorize(Policy = Policies.Admin)]
-        public async Task<IActionResult> ChangeUserAsync(Guid userId, ChangeUserDto record)
-        {
-            return Ok();
-        }
-        
         [HttpDelete]
         [Route("{userId}/delete")]
         [Authorize(Policy = Policies.Admin)]
         public async Task<IActionResult> DeleteUserAsync(Guid userId)
         {
+            await _userService.DeleteUserAsync(userId);
+
             return Ok();
         }
     }

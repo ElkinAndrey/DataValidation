@@ -13,6 +13,17 @@ namespace DataValidationAPI.Service.Services
             _repository = repository;
         }
 
+        public async Task DeleteUserAsync(Guid userId)
+        {
+            var user = await _repository.GetById(userId);
+
+            if (user is null)
+                return;
+
+            await _repository.Delete(user.Id);
+            await _repository.Save();
+        }
+
         public async Task<User> GetUserByIdAsync(Guid userId)
         {
             var user = await _repository.GetById(userId);

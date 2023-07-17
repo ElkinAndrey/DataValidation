@@ -31,5 +31,11 @@ namespace DataValidationAPI.Service.Abstractions
         /// <param name="userId">Id пользователя</param>
         /// <returns>Пользователь</returns>
         public Task<User> GetUserByIdAsync(Guid userId);
+
+        /// <summary>
+        /// Заблокировать пользователя
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        public Task DeleteUserAsync(Guid userId);
     }
 }
