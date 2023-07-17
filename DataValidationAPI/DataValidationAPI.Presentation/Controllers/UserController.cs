@@ -1,5 +1,6 @@
 ﻿using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Infrastructure.Dto.User;
+using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Dto;
@@ -137,6 +138,32 @@ namespace DataValidationAPI.Presentation.Controllers
         public async Task<IActionResult> UnblockUserAsync(Guid userId)
         {
             await _userService.ChangeBlockUserAsync(userId, true);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{userId}/email")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> ChangeEmailAsync(Guid userId, ChangeEmailDto record)
+        {
+            if (record.NewEmail is null)
+                throw new NewEmailNotSpecifiedException();
+
+            await _userService.ChangeEmailAsync(userId, record.NewEmail);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{userId}/password")]
+        [Authorize(Policy = Policies.Admin)]
+        public async Task<IActionResult> ChangePasswordAsync(Guid userId, ChangePasswordDto record)
+        {
+            if (record.NewPassword is null)
+                throw new NewPasswordNotSpecifiedException();
+
+            await _userService.ChangePasswordAsync(userId, record.NewPassword);
 
             return Ok();
         }

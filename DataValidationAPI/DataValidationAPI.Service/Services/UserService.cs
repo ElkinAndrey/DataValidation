@@ -1,7 +1,10 @@
-﻿using DataValidationAPI.Domain.Entities;
+﻿using DataValidationAPI.Domain.Constants;
+using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
+using DataValidationAPI.Persistence.Repositories;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Exceptions;
+using DataValidationAPI.Service.Features;
 
 namespace DataValidationAPI.Service.Services
 {
@@ -22,6 +25,47 @@ namespace DataValidationAPI.Service.Services
                 throw new UserNotFoundException(userId);
 
             user.IsActive = isActive;
+
+            await _repository.Update(user);
+            await _repository.Save();
+        }
+
+        public async Task ChangeEmailAsync(Guid userId, string newEmail)
+        {
+            // Есть ли такой Email
+            if (await _repository.GetByEmail(newEmail) is not null)
+                throw new EmailAlreadyExistsException(newEmail);
+
+            var user = await _repository.GetById(userId);
+
+            if (user is null)
+                throw new UserNotFoundException(userId);
+
+            user.Email = newEmail;
+            user.RefreshToken = null;
+            user.TokenExpirationDate = null;
+
+            await _repository.Update(user);
+            await _repository.Save();
+        }
+
+        public async Task ChangePasswordAsync(Guid userId, string newPassword)
+        {
+            var user = await _repository.GetById(userId);
+
+            if (user is null)
+                throw new UserNotFoundException(userId);
+
+            string passwordHash; // Хэш пароля
+            byte[] passwordSalt; // Соль пароля
+
+            // Хэшируется пароль
+            PasswordHash.Create(newPassword, out passwordHash, out passwordSalt);
+
+            user.PasswordHash = passwordHash; // Хэш пароля
+            user.PasswordSalt = passwordSalt; // Соль пароля
+            user.RefreshToken = null;
+            user.TokenExpirationDate = null;
 
             await _repository.Update(user);
             await _repository.Save();

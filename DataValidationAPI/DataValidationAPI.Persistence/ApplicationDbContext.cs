@@ -48,8 +48,6 @@ namespace DataValidationAPI.Persistence
             // Добавление уникальных атрибутов
             modelBuilder.Entity<Role>()
                 .HasAlternateKey(r => r.Name);
-            modelBuilder.Entity<User>()
-                .HasAlternateKey(u => u.Email);
 
             // Добавление двух первичных ключей
             modelBuilder.Entity<DataCheck>()

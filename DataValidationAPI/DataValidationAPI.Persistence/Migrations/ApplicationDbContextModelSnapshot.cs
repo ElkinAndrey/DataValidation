@@ -200,7 +200,7 @@ namespace DataValidationAPI.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -226,8 +226,6 @@ namespace DataValidationAPI.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("Email");
 
                     b.HasIndex("RoleId");
 

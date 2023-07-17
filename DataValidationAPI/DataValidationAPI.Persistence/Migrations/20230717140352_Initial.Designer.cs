@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataValidationAPI.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230716182824_Initial")]
+    [Migration("20230717140352_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -203,7 +203,7 @@ namespace DataValidationAPI.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -229,8 +229,6 @@ namespace DataValidationAPI.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("Email");
 
                     b.HasIndex("RoleId");
 
