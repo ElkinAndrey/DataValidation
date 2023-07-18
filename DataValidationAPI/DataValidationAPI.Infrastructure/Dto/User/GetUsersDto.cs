@@ -24,4 +24,23 @@
         Guid? RoleId,
         DateTime? StartRegistrationDate,
         DateTime? EndRegistrationDate);
+
+    /// <summary>
+    /// Данные для получения количества пользователей 
+    /// </summary>
+    /// <remarks>
+    /// string? Email,
+    /// Guid? RoleId,
+    /// DateTime? StartRegistrationDate,
+    /// DateTime? EndRegistrationDate);
+    /// </remarks>
+    /// <param name="Email">Часть электронная почта</param>
+    /// <param name="RoleId">Id роли</param>
+    /// <param name="StartRegistrationDate">Начало отчета даты регистрации</param>
+    /// <param name="EndRegistrationDate">Конец отчета даты регистрации</param>
+    public record class GetUserCountDto(
+        string? Email,
+        Guid? RoleId,
+        DateTime? StartRegistrationDate,
+        DateTime? EndRegistrationDate);
 }

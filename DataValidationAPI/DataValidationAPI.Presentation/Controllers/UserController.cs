@@ -116,7 +116,24 @@ namespace DataValidationAPI.Presentation.Controllers
                 u.RegistrationDate,
             }));
         }
-        
+
+        /// <summary>
+        /// Получить список пользователей
+        /// </summary>
+        [HttpPost]
+        [Route("count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserCountAsync(GetUserCountDto record)
+        {
+            int count = await _userService.GetUserCountAsync(
+                email: record.Email,
+                roleId: record.RoleId,
+                startRegistrationDate: record.StartRegistrationDate,
+                endRegistrationDate: record.EndRegistrationDate);
+
+            return Ok(count);
+        }
+
         /// <summary>
         /// Получить пользователя по Id
         /// </summary>

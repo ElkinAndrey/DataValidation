@@ -65,5 +65,19 @@ namespace DataValidationAPI.Service.Abstractions
         /// <param name="userId">Id пользователя</param>
         /// <param name="isManager">Сделать ли человека менеджером</param>
         public Task ChangeManagerRoleAsync(Guid userId, bool isManager);
+
+        /// <summary>
+        /// Получить количество пользователей
+        /// </summary>
+        /// <param name="email">Электронная почта</param>
+        /// <param name="roleId">Id роли</param>
+        /// <param name="startRegistrationDate">Начало отчета даты регистрации</param>
+        /// <param name="endRegistrationDate">Конец отчета даты регистрации</param>
+        /// <returns>Количество пользователей</returns>
+        public Task<int> GetUserCountAsync(
+            string? email,
+            Guid? roleId,
+            DateTime? startRegistrationDate,
+            DateTime? endRegistrationDate);
     }
 }

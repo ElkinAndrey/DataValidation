@@ -130,6 +130,23 @@ namespace DataValidationAPI.Service.Services
             return user;
         }
 
+        public async Task<int> GetUserCountAsync(
+            string? email,
+            Guid? roleId,
+            DateTime? startRegistrationDate,
+            DateTime? endRegistrationDate)
+        {
+            var users = await _userRepository.Get(
+                start: 0,
+                length: int.MaxValue,
+                email: email,
+                roleId: roleId,
+                startRegistrationDate: startRegistrationDate,
+                endRegistrationDate: endRegistrationDate);
+
+            return users.Count();
+        }
+
         public async Task<IEnumerable<User>> GetUsersAsync(
             int start = 0,
             int length = int.MaxValue,
