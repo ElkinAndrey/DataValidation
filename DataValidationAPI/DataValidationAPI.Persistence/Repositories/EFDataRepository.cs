@@ -32,7 +32,7 @@ namespace DataValidationAPI.Persistence.Repositories
             _set = context.Set<Data>();
         }
 
-        public async Task<IEnumerable<Data>> Get(GetDataFromRepositoryParams param)
+        public async Task<IQueryable<Data>> Get(GetDataFromRepositoryParams param)
         {
             return await Task.Run(() =>
             {
@@ -79,7 +79,6 @@ namespace DataValidationAPI.Persistence.Repositories
                     .OrderByDescending(d => d.Date)
                     .Skip(param.Start)
                     .Take(param.Length);
-
 
                 return data;
             });

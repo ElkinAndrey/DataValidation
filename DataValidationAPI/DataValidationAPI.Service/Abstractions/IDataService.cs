@@ -17,6 +17,13 @@ namespace DataValidationAPI.Service.Abstractions
         public Task<IEnumerable<Data>> GetDatasAsync(GetDataParams param);
 
         /// <summary>
+        /// Получить поличество данных
+        /// </summary>
+        /// <param name="param">Параметры для получения количества данных</param>
+        /// <returns>Список данных</returns>
+        public Task<int> GetDataCountAsync(GetDataCountParams param);
+
+        /// <summary>
         /// Добавить не проверенные данные
         /// </summary>
         /// <param name="userId">Id человека, который оставил данные</param>

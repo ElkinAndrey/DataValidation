@@ -1,4 +1,6 @@
-﻿using DataValidationAPI.Infrastructure.Dto.ProfileData;
+﻿using DataValidationAPI.Domain.Entities;
+using DataValidationAPI.Infrastructure.Dto.Data;
+using DataValidationAPI.Infrastructure.Dto.ProfileData;
 using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
@@ -80,6 +82,36 @@ namespace DataValidationAPI.Presentation.Controllers
                     d.DataCheck.Valid,
                 }
             }));
+        }
+
+        /// <summary>
+        /// Получить список данных
+        /// </summary>
+        [HttpPost]
+        [Route("count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetYourDataCountAsync(GetYourDataCountDto record)
+        {
+            var user = await Tokens.GetPersonByToken(this);
+
+            int count = await _service.GetDataCountAsync(new GetDataCountParams()
+            {
+                DateStart = record.DateStart,
+                DateEnd = record.DateEnd,
+                IsUnverifiedData = record.IsUnverifiedData ?? true,
+                IsValidatedData = record.IsValidatedData ?? true,
+                IsNoValidatedData = record.IsNoValidatedData ?? true,
+                IsCheckData = record.IsCheckData ?? true,
+                UserParam = user is null ? null : new UserParam()
+                {
+                    UserId = user.Id,
+                    RecipientDataId = user.Id,
+                    RoleRecipientData = user.Role?.Name!,
+                    TakeOnlyThisUser = true,
+                }
+            });
+
+            return Ok(count);
         }
 
         /// <summary>

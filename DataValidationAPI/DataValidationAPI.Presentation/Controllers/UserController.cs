@@ -1,4 +1,5 @@
 ﻿using DataValidationAPI.Domain.Constants;
+using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.User;
 using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;

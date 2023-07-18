@@ -10,6 +10,6 @@ namespace DataValidationAPI.Persistence.Abstractions
         /// </summary>
         /// <param name="param">Параметры для получения данных</param>
         /// <returns>Список данных</returns>
-        public Task<IEnumerable<Data>> Get(GetDataFromRepositoryParams param);
+        public Task<IQueryable<Data>> Get(GetDataFromRepositoryParams param);
     }
 }

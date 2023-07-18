@@ -159,6 +159,37 @@ namespace DataValidationAPI.Presentation.Controllers
         }
 
         /// <summary>
+        /// Получить список данных
+        /// </summary>
+        [HttpPost]
+        [Route("count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDataCountAsync(GetDataCountDto record)
+        {
+            var user = await Tokens.GetPersonByToken(this);
+
+            int count = await _service.GetDataCountAsync(new GetDataCountParams()
+            {
+                Email = record.Email,
+                DateStart = record.DateStart,
+                DateEnd = record.DateEnd,
+                IsUnverifiedData = record.IsUnverifiedData ?? true,
+                IsValidatedData = record.IsValidatedData ?? true,
+                IsNoValidatedData = record.IsNoValidatedData ?? true,
+                IsCheckData = record.IsCheckData ?? true,
+                UserParam = user is null ? null : new UserParam()
+                {
+                    UserId = user.Id,
+                    RecipientDataId = user.Id,
+                    RoleRecipientData = user.Role?.Name!,
+                    TakeOnlyThisUser = false,
+                }
+            });
+
+            return Ok(count);
+        }
+
+        /// <summary>
         /// Получить данные по Id
         /// </summary>
         [HttpGet]

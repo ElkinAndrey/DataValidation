@@ -121,7 +121,39 @@ namespace DataValidationAPI.Service.Services
             throw new NoPermissionToAccessDataException();
         }
 
+        public async Task<int> GetDataCountAsync(GetDataCountParams param)
+        {
+            var data = await GetDatasIQueryableAsync(new GetDataParams()
+            {
+                Start = 0,
+                Length = int.MaxValue,
+                Email = param.Email,
+                DateStart = param.DateStart,
+                DateEnd = param.DateEnd,
+                IsUnverifiedData = param.IsUnverifiedData,
+                IsValidatedData = param.IsValidatedData,
+                IsNoValidatedData = param.IsNoValidatedData,
+                IsCheckData = param.IsCheckData,
+                UserParam = param.UserParam is null ? null : new UserParam()
+                {
+                    UserId = param.UserParam.UserId,
+                    RecipientDataId = param.UserParam.UserId,
+                    RoleRecipientData = param.UserParam.RoleRecipientData,
+                    TakeOnlyThisUser = param.UserParam.TakeOnlyThisUser,
+                }
+            });
+
+            return data.Count();
+        }
+
         public async Task<IEnumerable<Data>> GetDatasAsync(GetDataParams param)
+        {
+           var data = await GetDatasIQueryableAsync(param);
+
+            return data;
+        }
+
+        private async Task<IQueryable<Data>> GetDatasIQueryableAsync(GetDataParams param)
         {
             var repParam = new GetDataFromRepositoryParams()
             {
