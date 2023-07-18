@@ -1,5 +1,5 @@
 using DataValidationAPI.Persistence.Configure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DataValidationAPI.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,5 +27,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseExceptionHandlerMiddleware();
 
 app.Run();

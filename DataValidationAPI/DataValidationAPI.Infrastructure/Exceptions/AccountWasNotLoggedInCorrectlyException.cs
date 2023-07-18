@@ -1,4 +1,4 @@
-﻿namespace DataValidationAPI.Presentation.Exceptions
+﻿namespace DataValidationAPI.Infrastructure.Exceptions
 {
     /// <summary>
     /// Ошибка, возникающая если вход в аккаунт выполнен некорректно

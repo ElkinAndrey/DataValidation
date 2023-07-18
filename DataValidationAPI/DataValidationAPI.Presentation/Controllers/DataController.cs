@@ -1,7 +1,7 @@
 using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.Data;
-using DataValidationAPI.Presentation.Exceptions;
+using DataValidationAPI.Infrastructure.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Dto;

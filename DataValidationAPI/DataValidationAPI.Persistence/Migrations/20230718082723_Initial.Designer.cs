@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataValidationAPI.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230718055822_Initial")]
+    [Migration("20230718082723_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

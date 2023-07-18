@@ -1,6 +1,5 @@
-﻿using DataValidationAPI.Domain.Constants;
-using DataValidationAPI.Infrastructure.Dto.User;
-using DataValidationAPI.Presentation.Exceptions;
+﻿using DataValidationAPI.Infrastructure.Dto.User;
+using DataValidationAPI.Infrastructure.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using Microsoft.AspNetCore.Authorization;
