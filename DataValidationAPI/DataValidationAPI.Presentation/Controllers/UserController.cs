@@ -9,19 +9,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с пользователями
+    /// </summary>
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
+        /// <summary>
+        /// Сервис для работы с данными
+        /// </summary>
         private IDataService _dataService;
+
+        /// <summary>
+        /// Сервис для работы с пользователями
+        /// </summary>
         private IUserService _userService;
 
+        /// <summary>
+        /// Контроллер для работы с пользователями
+        /// </summary>
+        /// <param name="dataService">Сервис для работы с данными</param>
+        /// <param name="userService">Контроллер для работы с пользователями</param>
         public UserController(IDataService dataService, IUserService userService)
         {
             _dataService = dataService;
             _userService = userService;
         }
 
+        /// <summary>
+        /// Получить данные по Id пользователя
+        /// </summary>
         [HttpPost]
         [Route("{userId}/data")]
         [AllowAnonymous]
@@ -72,6 +90,9 @@ namespace DataValidationAPI.Presentation.Controllers
             }));
         }
 
+        /// <summary>
+        /// Получить список пользователей
+        /// </summary>
         [HttpPost]
         [Route("")]
         [AllowAnonymous]
@@ -95,6 +116,9 @@ namespace DataValidationAPI.Presentation.Controllers
             }));
         }
         
+        /// <summary>
+        /// Получить пользователя по Id
+        /// </summary>
         [HttpGet]
         [Route("{userId}")]
         [AllowAnonymous]
@@ -111,7 +135,10 @@ namespace DataValidationAPI.Presentation.Controllers
                 user.RegistrationDate,
             });
         }
-        
+
+        /// <summary>
+        /// Удалить пользователя
+        /// </summary>
         [HttpDelete]
         [Route("{userId}/delete")]
         [Authorize(Policy = Policies.Admin)]
@@ -122,6 +149,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Заблокировать пользователя
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/block")]
         [Authorize(Policy = Policies.Admin)]
@@ -132,6 +162,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Разблокировать пользователя
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/unblock")]
         [Authorize(Policy = Policies.Admin)]
@@ -142,6 +175,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Поменять электронную почту пользователя
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/email")]
         [Authorize(Policy = Policies.Admin)]
@@ -155,6 +191,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Поменять пароль пользователя
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/password")]
         [Authorize(Policy = Policies.Admin)]
@@ -168,6 +207,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Выдат пользователю роль менеджера
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/manager/give")]
         [Authorize(Policy = Policies.Admin)]
@@ -177,7 +219,10 @@ namespace DataValidationAPI.Presentation.Controllers
 
             return Ok();
         }
-
+        
+        /// <summary>
+        /// Забрать у пользователя роль менеджера
+        /// </summary>
         [HttpPut]
         [Route("{userId}/change/manager/take")]
         [Authorize(Policy = Policies.Admin)]

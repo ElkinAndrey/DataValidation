@@ -5,7 +5,7 @@ using DataValidationAPI.Service.Dto;
 namespace DataValidationAPI.Service.Abstractions
 {
     /// <summary>
-    /// Сервис для работы с данными
+    /// Интерфейс сервиса для работы с данными
     /// </summary>
     public interface IDataService
     {

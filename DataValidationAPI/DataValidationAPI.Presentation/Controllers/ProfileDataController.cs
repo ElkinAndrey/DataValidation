@@ -8,17 +8,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с данными через профиль пользователя
+    /// </summary>
     [Route("api/profile/data")]
     [ApiController]
     public class ProfileDataController : ControllerBase
     {
+        /// <summary>
+        /// Сервис для работы с данными
+        /// </summary>
         private IDataService _service;
 
+        /// <summary>
+        /// Контроллер для работы с данными через профиль пользователя
+        /// </summary>
+        /// <param name="service"></param>
         public ProfileDataController(IDataService service)
         {
             _service = service;
         }
 
+        /// <summary>
+        /// Получить список своих данных
+        /// </summary>
         [HttpPost]
         [Route("")]
         [Authorize]
@@ -69,6 +82,9 @@ namespace DataValidationAPI.Presentation.Controllers
             }));
         }
 
+        /// <summary>
+        /// Удалить свои данные
+        /// </summary>
         [HttpDelete]
         [Route("{dataId}/delete")]
         [Authorize]
@@ -83,6 +99,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Изменить свои данные
+        /// </summary>
         [HttpPut]
         [Route("{dataId}/change")]
         [Authorize]

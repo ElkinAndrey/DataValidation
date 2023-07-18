@@ -11,10 +11,20 @@ namespace DataValidationAPI.Persistence.Repositories
     /// <typeparam name="TEntity">Сущность репозитория</typeparam>
     public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-
+        /// <summary>
+        /// Контекст базы данных
+        /// </summary>
         private ApplicationDbContext _context;
+
+        /// <summary>
+        /// Нужная таблица
+        /// </summary>
         private DbSet<TEntity> _set;
 
+        /// <summary>
+        /// Универсальный репозиторий
+        /// </summary>
+        /// <param name="context">Контекст базы данных</param>
         public EFGenericRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -29,8 +39,11 @@ namespace DataValidationAPI.Persistence.Repositories
 
         public virtual async Task<IQueryable<TEntity>> Get()
         {
-            var urls = await _set.ToListAsync();
-            return urls.AsQueryable();
+            return await Task.Run(() =>
+            {
+                var urls = _set.AsQueryable();
+                return urls;
+            });
         }
 
         public virtual async Task<TEntity> GetById(Guid id)
@@ -50,8 +63,11 @@ namespace DataValidationAPI.Persistence.Repositories
 
         public virtual async Task Update(TEntity entity)
         {
-            _set.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            await Task.Run(() =>
+            {
+                _set.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            });
         }
 
         public virtual async Task Save()

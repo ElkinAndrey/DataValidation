@@ -69,7 +69,7 @@ namespace DataValidationAPI.Service.Services
             if (!PasswordHash.Verify(password, user?.PasswordHash!, user?.PasswordSalt!))
                 throw new WrongPasswordException();
 
-            var tokens = await GenerateTokens(user!, secretKey);
+            var tokens = GenerateTokens(user!, secretKey);
 
             user!.RefreshToken = tokens.RefreshToken;
             user!.TokenExpirationDate = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan;
@@ -102,7 +102,7 @@ namespace DataValidationAPI.Service.Services
                 throw new TokenNotValidException();
             }
 
-            var tokens = await GenerateTokens(user, secretKey);
+            var tokens = GenerateTokens(user, secretKey);
 
             user.RefreshToken = tokens.RefreshToken;
             user.TokenExpirationDate = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan;
@@ -142,7 +142,7 @@ namespace DataValidationAPI.Service.Services
                 RegistrationDate = DateTime.Now,
             };
 
-            var tokens = await GenerateTokens(user, secretKey);
+            var tokens = GenerateTokens(user, secretKey);
 
             user.RefreshToken = tokens.RefreshToken;
             user.TokenExpirationDate = tokens.GenerationDate + JwtLifetime.RefreshTimeSpan;
@@ -153,7 +153,13 @@ namespace DataValidationAPI.Service.Services
             return tokens;
         }
 
-        private async Task<PairOfTokens> GenerateTokens(User user, string secretKey)
+        /// <summary>
+        /// Сгенерировать пару токенов
+        /// </summary>
+        /// <param name="user">Пользователь, у которого будут генерироваться токены</param>
+        /// <param name="secretKey">Секретный ключ</param>
+        /// <returns>Пара токенов</returns>
+        private PairOfTokens GenerateTokens(User user, string secretKey)
         {
             // Данные, которые будут записаны в токен
             List<Claim> claims = new List<Claim>

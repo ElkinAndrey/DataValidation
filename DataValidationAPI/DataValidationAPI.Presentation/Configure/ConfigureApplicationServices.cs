@@ -17,10 +17,20 @@ using System.Text;
 
 namespace DataValidationAPI.Persistence.Configure
 {
+    /// <summary>
+    /// Конфигурациии милдвейр
+    /// </summary>
     public class ConfigureApplicationServices
     {
+        /// <summary>
+        /// Билдер
+        /// </summary>
         private readonly WebApplicationBuilder _builder;
 
+        /// <summary>
+        /// Конфигурациии милдвейр
+        /// </summary>
+        /// <param name="builder">Билдер</param>
         public ConfigureApplicationServices(WebApplicationBuilder builder)
         {
             _builder = builder;

@@ -7,11 +7,26 @@ using DataValidationAPI.Service.Features;
 
 namespace DataValidationAPI.Service.Services
 {
+    /// <summary>
+    /// Сервис для работы с пользователями
+    /// </summary>
     public class UserService : IUserService
     {
+        /// <summary>
+        /// Репозиторий для работы с людьми
+        /// </summary>
         private IUserRepository _userRepository;
+
+        /// <summary>
+        /// Репозиторий для работы с ролями
+        /// </summary>
         private IRoleRepository _roleRepository;
 
+        /// <summary>
+        /// Сервис для работы с пользователями
+        /// </summary>
+        /// <param name="userRepository">Репозиторий для работы с людьми</param>
+        /// <param name="roleRepository">Репозиторий для работы с ролями</param>
         public UserService(
             IUserRepository userRepository,
             IRoleRepository roleRepository)

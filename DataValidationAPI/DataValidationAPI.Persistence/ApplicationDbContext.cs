@@ -74,6 +74,10 @@ namespace DataValidationAPI.Persistence
             CreateData(modelBuilder);
         }
 
+        /// <summary>
+        /// Создание данных для БД
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         private void CreateData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(DataForDB.Users);

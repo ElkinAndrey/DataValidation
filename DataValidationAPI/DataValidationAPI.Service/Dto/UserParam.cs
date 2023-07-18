@@ -1,6 +1,4 @@
-﻿using DataValidationAPI.Domain.Entities;
-
-namespace DataValidationAPI.Service.Dto
+﻿namespace DataValidationAPI.Service.Dto
 {
     /// <summary>
     /// Параметры пользователя

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DataValidationAPI.Domain.Entities
+﻿namespace DataValidationAPI.Domain.Entities
 {
     /// <summary>
     /// Проверяемые данных

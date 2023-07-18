@@ -1,5 +1,8 @@
 ﻿namespace DataValidationAPI.Domain.Constants
 {
+    /// <summary>
+    /// Время жизни токенов
+    /// </summary>
     public static class JwtLifetime
     {
         /// <summary>

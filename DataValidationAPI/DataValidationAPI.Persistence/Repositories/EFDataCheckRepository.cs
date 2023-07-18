@@ -1,6 +1,5 @@
 ﻿using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Persistence.Abstractions;
-using DataValidationAPI.Persistence.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataValidationAPI.Persistence.Repositories
@@ -10,9 +9,20 @@ namespace DataValidationAPI.Persistence.Repositories
     /// </summary>
     public class EFDataCheckRepository : IDataCheckRepository
     {
+        /// <summary>
+        /// Контекст базы данных
+        /// </summary>
         private ApplicationDbContext _context;
+
+        /// <summary>
+        /// Нужная таблица
+        /// </summary>
         private DbSet<DataCheck> _set;
 
+        /// <summary>
+        /// Репозиторий проверки данных
+        /// </summary>
+        /// <param name="context">Контекст базы данных</param>
         public EFDataCheckRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -22,7 +32,8 @@ namespace DataValidationAPI.Persistence.Repositories
         public async Task Delete(Guid dataId)
         {
             var entity = await GetById(dataId);
-            _set.Remove(entity);
+            if (entity is not null)
+                _set.Remove(entity);
         }
 
         public async Task<DataCheck?> GetById(Guid dataId)
@@ -39,8 +50,11 @@ namespace DataValidationAPI.Persistence.Repositories
 
         public async Task Update(DataCheck entity)
         {
-            _set.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            await Task.Run(() =>
+            {
+                _set.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            });
         }
 
         public async Task Save()

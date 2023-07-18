@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataValidationAPI.Infrastructure.Dto.User
+﻿namespace DataValidationAPI.Infrastructure.Dto.User
 {
     /// <summary>
     /// Данные для получения данных
     /// </summary>
+    /// <remarks>
+    /// int? Start,
+    /// int? Length,
+    /// DateTime? DateStart,
+    /// DateTime? DateEnd,
+    /// bool? IsUnverifiedData = true,
+    /// bool? IsValidatedData = true,
+    /// bool? IsNoValidatedData = true,
+    /// bool? IsCheckData = true
+    /// </remarks>
     /// <param name="Start">Начало отчета</param>
     /// <param name="Length">Длина среза</param>
     /// <param name="DateStart">Дата начала отчета</param>

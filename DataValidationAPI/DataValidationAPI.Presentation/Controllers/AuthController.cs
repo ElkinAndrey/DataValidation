@@ -6,13 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    /// <summary>
+    /// Контроллер авторизации
+    /// </summary>
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
+        /// <summary>
+        /// Конфигурации
+        /// </summary>
         private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Сервис авторизации
+        /// </summary>
         private readonly IAuthService _authService;
 
+        /// <summary>
+        /// Контроллер авторизации
+        /// </summary>
+        /// <param name="configuration">Конфигурации</param>
+        /// <param name="authService">Сервис авторизации</param>
         public AuthController(IConfiguration configuration, IAuthService authService)
         {
             _configuration = configuration;
@@ -22,6 +37,23 @@ namespace DataValidationAPI.Presentation.Controllers
         /// <summary>
         /// Зарегистироваться
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Принимает
+        /// </para>
+        /// <para>
+        ///{
+        ///  "email": "string",
+        ///  "password": "string"
+        ///}
+        /// </para>
+        /// <para>
+        /// Возвращает (Access токе)
+        /// </para>
+        /// <para>
+        /// eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy...
+        /// </para>
+        /// </remarks>
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterDto request)
         {
@@ -44,6 +76,23 @@ namespace DataValidationAPI.Presentation.Controllers
         /// <summary>
         /// Войти
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Принимает
+        /// </para>
+        /// <para>
+        ///{
+        ///  "email": "string",
+        ///  "password": "string"
+        ///}
+        /// </para>
+        /// <para>
+        /// Возвращает (Access токе)
+        /// </para>
+        /// <para>
+        /// eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy...
+        /// </para>
+        /// </remarks>
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDto request)
         {
@@ -86,6 +135,14 @@ namespace DataValidationAPI.Presentation.Controllers
         /// <summary>
         /// Перезайти
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Возвращает (Access токе)
+        /// </para>
+        /// <para>
+        /// eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy...
+        /// </para>
+        /// </remarks>
         [HttpGet("refresh")]
         public async Task<IActionResult> RefreshAsync()
         {            

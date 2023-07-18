@@ -32,6 +32,7 @@ namespace DataValidationAPI.Service.Services
         /// Репозиторий с пользователями
         /// </summary>
         /// <param name="dataRepository">Репозиторий с данными</param>
+        /// <param name="dataCheckRepository">Репозиторий с проверками данных</param>
         /// <param name="userRepository">Репозиторий с пользователями</param>
         public DataService(
             IDataRepository dataRepository,
@@ -108,7 +109,7 @@ namespace DataValidationAPI.Service.Services
                         return data;
                     break;
                 case Roles.User:
-                    if (data.PersonProvided.Id == user.Id ||
+                    if (data.PersonProvided!.Id == user.Id ||
                         (data.DataCheck is not null && data.DataCheck.Valid == true))
                         return data;
                     break;
@@ -185,22 +186,16 @@ namespace DataValidationAPI.Service.Services
             var dataCheck = await _dataCheckRepository.GetById(dataId);
             var user = await _userRepository.GetById(userId);
 
-            if (dataCheck is null)
-            {
-                var data = await _dataRepository.GetById(dataId);
-                await _dataCheckRepository.Insert(new DataCheck()
-                {
-                    Data = data,
-                    User = user,
-                    Valid = valid
-                });
-                await _dataCheckRepository.Save();
-                return;
-            }
+            if (dataCheck is not null)
+                await _dataCheckRepository.Delete(dataId);
 
-            dataCheck.Valid = valid;
-            dataCheck.User = user;
-            await _dataCheckRepository.Update(dataCheck);
+            var data = await _dataRepository.GetById(dataId);
+            await _dataCheckRepository.Insert(new DataCheck()
+            {
+                Data = data,
+                User = user,
+                Valid = valid
+            });
             await _dataCheckRepository.Save();
         }
     }

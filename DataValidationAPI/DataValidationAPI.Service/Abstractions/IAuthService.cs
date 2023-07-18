@@ -2,6 +2,9 @@
 
 namespace DataValidationAPI.Service.Abstractions
 {
+    /// <summary>
+    /// Интерфейс сервиса авторизации
+    /// </summary>
     public interface IAuthService
     {
         /// <summary>

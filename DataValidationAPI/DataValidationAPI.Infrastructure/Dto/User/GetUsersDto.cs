@@ -3,6 +3,14 @@
     /// <summary>
     /// Данные для получения пользователей 
     /// </summary>
+    /// <remarks>
+    /// int? Start,
+    /// int? Length,
+    /// string? Email,
+    /// Guid? RoleId,
+    /// DateTime? StartRegistrationDate,
+    /// DateTime? EndRegistrationDate);
+    /// </remarks>
     /// <param name="Start">Начало отчета</param>
     /// <param name="Length">Длина среза</param>
     /// <param name="Email">Часть электронная почта</param>

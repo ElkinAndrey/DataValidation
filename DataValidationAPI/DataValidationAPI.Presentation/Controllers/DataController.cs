@@ -1,6 +1,7 @@
 using DataValidationAPI.Domain.Constants;
 using DataValidationAPI.Domain.Entities;
 using DataValidationAPI.Infrastructure.Dto.Data;
+using DataValidationAPI.Presentation.Exceptions;
 using DataValidationAPI.Presentation.Features;
 using DataValidationAPI.Service.Abstractions;
 using DataValidationAPI.Service.Dto;
@@ -12,17 +13,84 @@ using System.Security.Claims;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с данными
+    /// </summary>
     [Route("api/data")]
     [ApiController]
     public class DataController : ControllerBase
     {
+        /// <summary>
+        /// Сервис данных
+        /// </summary>
         private IDataService _service;
 
+        /// <summary>
+        /// Контроллер для работы с данными
+        /// </summary>
+        /// <param name="service">Сервис данных</param>
         public DataController(IDataService service)
         {
             _service = service;
         }
 
+        /// <summary>
+        /// Указать, что данные прошли проверку
+        /// </summary>
+        [HttpPost]
+        [Route("{dataId}/valid")]
+        [Authorize(Policy = Policies.Manager)]
+        public async Task<IActionResult> ValidDataAsync(Guid dataId)
+        {
+            var user = await Tokens.GetPersonByToken(this);
+
+            if (user is null)
+                throw new AccountWasNotLoggedInCorrectlyException();
+
+            await _service.RateDataAsync(dataId, user.Id, true);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Указать, что данные не прошли проверку
+        /// </summary>
+        [HttpPost]
+        [Route("{dataId}/invalid")]
+        [Authorize(Policy = Policies.Manager)]
+        public async Task<IActionResult> InvalidDataAsync(Guid dataId)
+        {
+            var user = await Tokens.GetPersonByToken(this);
+
+            if (user is null)
+                throw new AccountWasNotLoggedInCorrectlyException();
+
+            await _service.RateDataAsync(dataId, user.Id, false);
+
+            return Ok();
+        }
+        
+        /// <summary>
+        /// Указать, что данные пока проверяются
+        /// </summary>
+        [HttpPost]
+        [Route("{dataId}/review")]
+        [Authorize(Policy = Policies.Manager)]
+        public async Task<IActionResult> ReviewDataAsync(Guid dataId)
+        {
+            var user = await Tokens.GetPersonByToken(this);
+
+            if (user is null)
+                throw new AccountWasNotLoggedInCorrectlyException();
+
+            await _service.RateDataAsync(dataId, user.Id, null);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Добавить не провереннные данные
+        /// </summary>
         [HttpPost]
         [Route("add")]
         [Authorize]
@@ -30,12 +98,15 @@ namespace DataValidationAPI.Presentation.Controllers
         {
             var user = await Tokens.GetPersonByToken(this);
             await _service.AddNoValidDatesAsync(
-                userId: user.Id,
+                userId: user!.Id,
                 information: record.Information);
 
             return Ok();
         }
 
+        /// <summary>
+        /// Получить список данных
+        /// </summary>
         [HttpPost]
         [Route("")]
         [AllowAnonymous]
@@ -87,6 +158,9 @@ namespace DataValidationAPI.Presentation.Controllers
             }));
         }
 
+        /// <summary>
+        /// Получить данные по Id
+        /// </summary>
         [HttpGet]
         [Route("{dataId}")]
         [AllowAnonymous]
@@ -119,6 +193,9 @@ namespace DataValidationAPI.Presentation.Controllers
             });
         }
 
+        /// <summary>
+        /// Изменить данные
+        /// </summary>
         [HttpPut]
         [Route("{dataId}/change")]
         [Authorize(Policy = Policies.Admin)]
@@ -132,6 +209,9 @@ namespace DataValidationAPI.Presentation.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Удалить данные
+        /// </summary>
         [HttpDelete]
         [Route("{dataId}/delete")]
         [Authorize(Policy = Policies.Admin)]

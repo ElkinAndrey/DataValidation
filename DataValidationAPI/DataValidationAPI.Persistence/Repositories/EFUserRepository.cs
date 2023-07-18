@@ -5,11 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataValidationAPI.Persistence.Repositories
 {
+    /// <summary>
+    /// Репозиторий для работы с пользователями
+    /// </summary>
     public class EFUserRepository : EFGenericRepository<User>, IUserRepository
     {
+        /// <summary>
+        /// Контекст базы данных
+        /// </summary>
         private ApplicationDbContext _context;
+
+        /// <summary>
+        /// Нужная таблица
+        /// </summary>
         private DbSet<User> _set;
 
+        /// <summary>
+        /// Репозиторий для работы с пользователями
+        /// </summary>
+        /// <param name="context">Контекст базы данных</param>
         public EFUserRepository(ApplicationDbContext context)
             : base(context)
         {
@@ -25,29 +39,32 @@ namespace DataValidationAPI.Persistence.Repositories
             DateTime? startRegistrationDate = null,
             DateTime? endRegistrationDate = null)
         {
-            var users = _set
-                .Include(u => u.Role)
-                .Where(u =>
-                    email == null || email == ""
-                    ? true
-                    : u.Email.Contains(email))
-                .Where(u =>
-                    roleId == null
-                    ? true
-                    : u.RoleId == roleId)
-                .Where(d =>
-                    startRegistrationDate == null
-                    ? true
-                    : d.RegistrationDate >= startRegistrationDate)
-                .Where(d =>
-                    endRegistrationDate == null
-                    ? true
-                    : d.RegistrationDate <= endRegistrationDate)
-                .OrderByDescending(u => u.RegistrationDate)
-                .Skip(start)
-                .Take(length);
+            return await Task.Run(() =>
+            {
+                var users = _set
+                    .Include(u => u.Role)
+                    .Where(u =>
+                        email == null || email == ""
+                        ? true
+                        : u.Email.Contains(email))
+                    .Where(u =>
+                        roleId == null
+                        ? true
+                        : u.RoleId == roleId)
+                    .Where(d =>
+                        startRegistrationDate == null
+                        ? true
+                        : d.RegistrationDate >= startRegistrationDate)
+                    .Where(d =>
+                        endRegistrationDate == null
+                        ? true
+                        : d.RegistrationDate <= endRegistrationDate)
+                    .OrderByDescending(u => u.RegistrationDate)
+                    .Skip(start)
+                    .Take(length);
 
-            return users;
+                return users;
+            });
         }
 
         public override async Task<User> GetById(Guid id)

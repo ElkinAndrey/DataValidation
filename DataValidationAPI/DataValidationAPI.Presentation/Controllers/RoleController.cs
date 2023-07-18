@@ -4,17 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataValidationAPI.Presentation.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с ролями
+    /// </summary>
     [Route("api/role")]
     [ApiController]
     public class RoleController : ControllerBase
     {
+        /// <summary>
+        /// Репозиторий для работы с ролями
+        /// </summary>
         private IRoleRepository _repository;
 
+        /// <summary>
+        /// Контроллер для работы с ролями
+        /// </summary>
+        /// <param name="repository">Репозиторий для работы с ролями</param>
         public RoleController(IRoleRepository repository)
         {
             _repository = repository;
         }
 
+        /// <summary>
+        /// Получить роли
+        /// </summary>
         [HttpGet]
         [Route("")]
         [AllowAnonymous]
@@ -29,6 +42,9 @@ namespace DataValidationAPI.Presentation.Controllers
             }));
         }
 
+        /// <summary>
+        /// Получить роль по Id
+        /// </summary>
         [HttpGet]
         [Route("{roleId}")]
         [AllowAnonymous]
